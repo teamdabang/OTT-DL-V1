@@ -1,0 +1,12 @@
+{
+    "useAccount": false,
+    "hasPremium": false,
+    "authToken": "",
+    "accountName": "Guest",
+    "ytdlpPath": "/data/data/com.termux/files/usr/bin/yt-dlp",
+    "ffmpegPath": "/data/data/com.termux/files/usr/bin/ffmpeg",
+    "mp4decPath": "/data/data/com.termux/files/usr/bin/mp4decrypt",
+    "tempPath": "./downloads/temp",
+    "downloadPath": "./downloads/{}/{}",
+    "psshCacheStore": {}
+}
