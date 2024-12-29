@@ -790,7 +790,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                   print("Error:", e)
                   return json.dumps({})
 
-              pssh_kid = extract_unique_pssh_and_kid(mpd_text)
+              pssh_kid = extract_unique_pssh_and_kid(r.text)
 
               print(pssh_kid)
 
