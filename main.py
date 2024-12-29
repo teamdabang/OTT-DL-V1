@@ -763,7 +763,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
     else:
         is_jc = False
     if(any(pattern in url for pattern in ["www.sonyliv.com", "sonyliv.com", "sonyliv", "https://www.sonyliv.com"])):
-        contn = url.split('/')[-1]
+        contn = url.split('-')[-1]
         
         datasliv = requests.get(f"https://ottapi-fetcher-by-aryan-chaudhary.vercel.app/sliv?type=hi&vid={contn}").json()
         url = datasliv["mpd"]
