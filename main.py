@@ -770,11 +770,33 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             logging.info(r)
             import xmltodict
             logging.info(r.content)
-            mpd_data = xmltodict.parse(r.content)
-            if not mpd_data:
-                logging.info("[!] Failed to get MPD manifest")
-                return
-                
+            urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21
+            import re
+            def extract_unique_pssh_and_kid(text):
+              try:
+                  pattern = rb"edef8ba9-79d6-4ace-a3c8-27dcd51d21.*?<cenc:pssh>(.*?)</cenc:pssh>"
+                  matches = re.findall(pattern, text)
+                  if matches:
+                    pssh_kid_dict = {}
+                    for match in matches:
+                      pssh = match[0].strip().decode()
+                    
+                      if pssh not in pssh_kid_dict:
+                        pssh_kid_dict[pssh] = kid
+                    return json.dumps(pssh_kid_dict)
+        else:
+            return json.dumps({})
+    except Exception as e:
+        print("Error:", e)
+        return json.dumps({})
+
+pssh_kid_json = extract_unique_pssh_and_kid(mpd_text)
+
+print(pssh_kid_json)
+
+
+
+
 
             periods = mpd_data['MPD']['Period']
             if not periods:
