@@ -804,8 +804,9 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             pssh_cache = config.get("psshCacheStore")
 
     # Get Keys for all KIDs of PSSH
+            pssh = to_use_pssh
             if pssh:
-                pssh = to_use_pssh
+                
                 logging.info("pssh found sliv")
         
 
