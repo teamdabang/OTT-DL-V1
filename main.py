@@ -769,12 +769,12 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             import logging
             logging.info(r)
             import xmltodict
-            logging.info(r.content)
+            logging.info(r.text)
             
             import re
             def extract_unique_pssh_and_kid(text):
               try:
-                  pattern = rb"edef8ba9-79d6-4ace-a3c8-27dcd51d21.*?<cenc:pssh>(.*?)</cenc:pssh>"
+                  pattern = rb".*?edef8ba9-79d6-4ace-a3c8-27dcd51d21.*?<cenc:pssh>(.*?)</cenc:pssh>"
                   matches = re.findall(pattern, text)
                   if matches:
                     pssh_kid_dict = {}
