@@ -709,7 +709,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                 if matches:
                     print("hi")
                     smaller_pssh = min(matches, key=len)
-                    kyid = kid
+                    kyid = "kid"
                     return {smaller_pssh.strip().decode():kyid}, smaller_pssh.strip().decode()
 
 
