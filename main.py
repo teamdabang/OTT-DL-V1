@@ -773,26 +773,17 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             
             import re
             def extract_unique_pssh_and_kid(text):
-              try:
-                  pattern = rb".*?edef8ba9-79d6-4ace-a3c8-27dcd51d21.*?<cenc:pssh>(.*?)</cenc:pssh>"
-                  matches = re.findall(pattern, text)
-                  if matches:
-                    pssh_kid_dict = {}
-                    for match in matches:
-                      pssh = match[0].strip().decode()
-                    
-                      if pssh not in pssh_kid_dict:
-                        pssh_kid_dict[pssh] = kid
-                        return json.dumps(pssh_kid_dict)
-                      else:
-                        return json.dumps({})
-              except Exception as e:
-                  print("Error:", e)
-                  return json.dumps({})
+                pattern = rb"<cenc:pssh>(.*?)</cenc:pssh>"
+                matches = re.findall(pattern, text)
+                if matches:
+                    print("hi")
+                    smaller_pssh = min(matches, key=len)
+                    kyid = {kid}
+                    return {smaller_pssh.strip().decode():kyid}, smaller_pssh.strip().decode()
 
-              pssh_kid = extract_unique_pssh_and_kid(r.text)
+            pssh_kid, to_use_pssh = extract_unique_pssh_and_kid(r.content)
 
-              print(pssh_kid)
+            
 
 
 
@@ -829,10 +820,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
     else:
         is_sliv=False
         
-    if 2<3:
-        keys = {"rid_map":rid_map,"has_drm":has_drm,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url,"formats": "None", "language":"None"}
-        with open(f"{user_id}.json",'w') as f:
-            json.dump(keys,f)
+    
 
     if is_series and att > 1:
         
@@ -859,6 +847,16 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
 
         
     data = extractyt(url=url,ci=ci,is_dngplay=is_dngplay,is_sliv=is_sliv,is_hs=is_hs)
+    if is_sliv and datasliv["isencrypted"]:
+        rid_map = {}
+        for lang in data['formats']:
+            frmtid = lang['format_id']
+            rid_map[frmtid] = {to_use_pssh:kid}
+
+    if 2<3:
+        keys = {"rid_map":rid_map,"has_drm":has_drm,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url,"formats": "None", "language":"None"}
+        with open(f"{user_id}.json",'w') as f:
+            json.dump(keys,f)
    
     keyboard = []
     buttons = ButtonMaker()
@@ -870,6 +868,8 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         time.sleep(1)
         message.delete()
         return "hi"
+    
+        
     with open(f"hs{user_id}.json",'w') as writ, open(f"hsr{user_id}.json",'w') as rwrit:
       frmts = {}
       rfrmts = {}
