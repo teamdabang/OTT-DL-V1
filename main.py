@@ -770,7 +770,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             logging.info(r)
             import xmltodict
             logging.info(r.content)
-            urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21
+            
             import re
             def extract_unique_pssh_and_kid(text):
               try:
@@ -783,29 +783,26 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                     
                       if pssh not in pssh_kid_dict:
                         pssh_kid_dict[pssh] = kid
-                    return json.dumps(pssh_kid_dict)
-        else:
-            return json.dumps({})
-    except Exception as e:
-        print("Error:", e)
-        return json.dumps({})
+                        return json.dumps(pssh_kid_dict)
+                      else:
+                        return json.dumps({})
+              except Exception as e:
+                  print("Error:", e)
+                  return json.dumps({})
 
-pssh_kid_json = extract_unique_pssh_and_kid(mpd_text)
+              pssh_kid = extract_unique_pssh_and_kid(mpd_text)
 
-print(pssh_kid_json)
-
-
+              print(pssh_kid)
 
 
 
-            periods = mpd_data['MPD']['Period']
-            if not periods:
-                logging.info("[!] Failed to parse MPD manifest")
-                return
+
+
+            
             
 
-            rid_kid, pssh_kid = jiocine.parseMPDData(periods)
-            rid_map = rid_kid
+        #    rid_kid, pssh_kid = jiocine.parseMPDData(periods)
+           # rid_map = rid_kid
             pssh_cache = config.get("psshCacheStore")
 
     # Get Keys for all KIDs of PSSH
