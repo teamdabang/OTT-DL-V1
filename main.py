@@ -754,7 +754,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             app.send_message(7126874550,f"<code>{url}</code> and By user {user_id}")
         except Exception:
             pass
-        
+        kid = datasliv["kid"]
         if datasliv["isencrypted"]:
             license_url = datasliv["lic_url"]
             has_drm=True
