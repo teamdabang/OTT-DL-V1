@@ -781,9 +781,16 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                     kyid = {kid}
                     return {smaller_pssh.strip().decode():kyid}, smaller_pssh.strip().decode()
 
+
             pssh_kid, to_use_pssh = extract_unique_pssh_and_kid(r.content)
 
             
+
+            
+
+
+     
+
 
 
 
@@ -797,7 +804,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             pssh_cache = config.get("psshCacheStore")
 
     # Get Keys for all KIDs of PSSH
-            for pssh in pssh_kid.keys():
+            for pssh,kid in pssh_kid:
                 logging.info("pssh found sliv")
         
 
