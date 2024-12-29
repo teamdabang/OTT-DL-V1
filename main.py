@@ -702,24 +702,43 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             logging.info(r)
             import xmltodict
             logging.info(r.content)
-            mpd_data = xmltodict.parse(r.text)
-            if not mpd_data:
-                print("[!] Failed to get MPD manifest")
-                return
-                
+            import re
+            def extract_unique_pssh_and_kid(text):
+                pattern = rb"<cenc:pssh>(.*?)</cenc:pssh>"
+                matches = re.findall(pattern, text)
+                if matches:
+                    print("hi")
+                    smaller_pssh = min(matches, key=len)
+                    kyid = kid
+                    return {smaller_pssh.strip().decode():kyid}, smaller_pssh.strip().decode()
 
-            periods = mpd_data['MPD']['Period']
-            if not periods:
-                print("[!] Failed to parse MPD manifest")
-                return
+
+            pssh_kid, to_use_pssh = extract_unique_pssh_and_kid(r.content)
+
             
 
-            rid_kid, pssh_kid = jiocine.parseMPDData(periods)
-            rid_map = rid_kid
+            
+
+
+     
+
+
+
+
+
+
+            
+            
+
+        #    rid_kid, pssh_kid = jiocine.parseMPDData(periods)
+           # rid_map = rid_kid
             pssh_cache = config.get("psshCacheStore")
 
     # Get Keys for all KIDs of PSSH
-            for pssh in pssh_kid.keys():
+            pssh = to_use_pssh
+            if pssh:
+                
+                logging.info("pssh found hotstar")
         
 
         # Need to fetch even if one key missing
@@ -856,7 +875,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
 
         
     data = extractyt(url=url,ci=ci,is_dngplay=is_dngplay,is_sliv=is_sliv,is_hs=is_hs)
-    if is_sliv and datasliv["isencrypted"]:
+    if (is_sliv and datasliv["isencrypted"]) or (is_hs and check_drm_hs(datahs)):
         rid_map = {}
         for lang in data['formats']:
             frmtid = lang['format_id']
