@@ -703,13 +703,22 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             import xmltodict
             logging.info(r.content)
             import re
+            def kid(text):
+                pattern = rb'cenc:default_KID="(.*?)"/>'
+                matches = re.findall(pattern, text)
+                if matches:
+                    print("kid fetch")
+                    smaller_pssh = min(matches, key=len)
+                    return smaller_pssh.strip().decode()
+                
             def extract_unique_pssh_and_kid(text):
+                kid = kid(text)
                 pattern = rb"<cenc:pssh>(.*?)</cenc:pssh>"
                 matches = re.findall(pattern, text)
                 if matches:
                     print("hi")
                     smaller_pssh = min(matches, key=len)
-                    kyid = "kid"
+                    kyid = kid
                     return {smaller_pssh.strip().decode():kyid}, smaller_pssh.strip().decode()
 
 
