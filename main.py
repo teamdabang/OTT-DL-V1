@@ -703,7 +703,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             import xmltodict
             logging.info(r.content)
             import re
-            def kid(text):
+            def kidr(text):
                 pattern = rb'cenc:default_KID="(.*?)"/>'
                 matches = re.findall(pattern, text)
                 if matches:
@@ -712,7 +712,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                     return smaller_pssh.strip().decode()
                 
             def extract_unique_pssh_and_kid(text):
-                kid = kid(text)
+                kid = kidr(text)
                 pattern = rb"<cenc:pssh>(.*?)</cenc:pssh>"
                 matches = re.findall(pattern, text)
                 if matches:
@@ -816,19 +816,6 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
 
             pssh_kid, to_use_pssh = extract_unique_pssh_and_kid(r.content)
 
-            
-
-            
-
-
-     
-
-
-
-
-
-
-            
             
 
         #    rid_kid, pssh_kid = jiocine.parseMPDData(periods)
