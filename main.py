@@ -739,6 +739,9 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             if pssh:
                 
                 logging.info("pssh found hotstar")
+                def getkid(test):
+                    for key,value in test.items():
+                        return key
         
 
         # Need to fetch even if one key missing
@@ -753,6 +756,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                     logging.info("fetching keys")
                     pssh_cache[pssh] = requests.get(url='https://hls-proxifier-sage.vercel.app/hotstar',headers={"url":license_url,"pssh":pssh}).json()["keys"]
                     config.set("psshCacheStore", pssh_cache)
+                    kid = getkid(pssh_cache[pssh])
         else:
             license_url = None
     else:
