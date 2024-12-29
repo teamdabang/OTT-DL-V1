@@ -331,8 +331,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         output_name = "OTT-DL-(BETA)"
         if is_hs:
             output_name = "Hotstar.WebDl"
-            ydl_opts['proxy'] = ""
-            print("proxy Removed")
+       #     ydl_opts['proxy'] = ""
+         #   print("proxy Removed")
             
         if(any(pattern in url for pattern in ["www.sonyliv.com", "sonyliv.com", "sonyliv", "https://www.sonyliv.com"])):
             is_sliv=True 
