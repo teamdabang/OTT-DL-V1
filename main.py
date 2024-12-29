@@ -858,7 +858,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         rid_map = {}
         for lang in data['formats']:
             frmtid = lang['format_id']
-            rid_map[frmtid] = {to_use_pssh:kid}
+            rid_map[frmtid] = {'kid':kid, 'pssh':to_use_pssh}
 
     if 2<3:
         keys = {"rid_map":rid_map,"has_drm":has_drm,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url,"formats": "None", "language":"None"}
