@@ -686,7 +686,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                 url = mpd
             else:
                 showid = url.split('/')[-1]
-                cntid = url.split('/')[-1]
+                cntid = url.split('/')[-3]
                 datazee5 = requests.get(f"https://zee5-olive.vercel.app/zee5?id={ctnid}&type=SERIES&show={showid}").json()
                 nl = datazee5['nl']
                 customdata = datazee5['customdata']
