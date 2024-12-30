@@ -703,7 +703,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             import re
             
             def kidr(text):
-                pattern = rb'cenc:default_KID="(.*?)"/>'
+                pattern = rb'cenc:default_KID="(.*?)" schemeIdUri/>'
                 matches = re.findall(pattern, text)
                 if matches:
                     print("kid fetch")
