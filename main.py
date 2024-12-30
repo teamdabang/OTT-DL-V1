@@ -833,6 +833,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         # Need to fetch even if one key missing
                 fetch_keys = False
                 if pssh in pssh_cache:
+                    kid = getkid(pssh_cache[pssh])
                     fetch_keys = False
                     
                 else:
