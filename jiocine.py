@@ -143,7 +143,7 @@ def fetchPlaybackData(content_id, token):
             },
             "frameRateCapability": [
                 {
-                    "frameRateSupport": "50fps",
+                    "frameRateSupport": "60fps",
                     "videoQuality": "2160p"
                 }
             ]
