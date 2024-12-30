@@ -674,6 +674,92 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         
     else:
         is_dngplay=False
+    if(any(pattern in url for pattern in ["www.zee5.com", "zee5.com", "zee5", "https://www.zee5.com"])):
+            if(any(pattern in url for pattern in ["movies"])):
+                ctnid = url.split('/')[-1]
+                datazee5 = requests.get(f"https://zee5-olive.vercel.app/zee5?id={ctnid}&type=MOVIE").json()
+                nl = datazee5['nl']
+                customdata = datazee5['customdata']
+                mpd = datazee5['mpd']
+                url = mpd
+            else:
+                showid = url.split('/')[-1]
+                cntid = url.split('/')[-1]
+                datazee5 = requests.get(f"https://zee5-olive.vercel.app/zee5?id={ctnid}&type=SERIES&show={showid}").json()
+                nl = datazee5['nl']
+                customdata = datazee5['customdata']
+                mpd = datazee5['mpd']
+                url = mpd
+            is_zee5 = True
+            headersy = {
+                      "Origin": "https://www.zee5.com",
+                      "Referer": "https://www.zee5.com/",
+                      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+            }
+            r = requests.get(url, headers=headersy)
+            import logging
+            logging.info(r)
+            import xmltodict
+            logging.info(r.content)
+            import re
+            
+            def kidr(text):
+                pattern = rb'cenc:default_KID="(.*?)"/>'
+                matches = re.findall(pattern, text)
+                if matches:
+                    print("kid fetch")
+                    smaller_pssh = min(matches, key=len)
+                    return smaller_pssh.strip().decode()
+
+            kid = kidr(r.content)
+            def extract_unique_pssh_and_kid(text):
+                
+                pattern = rb"<cenc:pssh>(.*?)</cenc:pssh>"
+                matches = re.findall(pattern, text)
+                if matches:
+                    print("hi")
+                    smaller_pssh = min(matches, key=len)
+                    kyid = kid
+                    return smaller_pssh.strip().decode(), smaller_pssh.strip().decode()
+
+
+            
+            pssh_kid, to_use_pssh = extract_unique_pssh_and_kid(r.content)
+            
+
+        #    rid_kid, pssh_kid = jiocine.parseMPDData(periods)
+           # rid_map = rid_kid
+            pssh_cache = config.get("psshCacheStore")
+
+    # Get Keys for all KIDs of PSSH
+            pssh = to_use_pssh
+            if pssh:
+                has_drm = True
+                
+                logging.info("pssh found zee5")
+                def getkid(test):
+                    for key,value in test.items():
+                        return key
+        
+
+        # Need to fetch even if one key missing
+                fetch_keys = False
+                if pssh in pssh_cache:
+                    fetch_keys = False
+                    
+                else:
+                    fetch_keys = True
+        
+                if fetch_keys:
+                    logging.info("fetching keys")
+                    pssh_cache[pssh] = requests.get(url='https://zee5-olive.vercel.app/z5',headers={"nl":nl,"customdata":customdata,"pssh":pssh}).json()["keys"]
+                    config.set("psshCacheStore", pssh_cache)
+                    kid = getkid(pssh_cache[pssh])
+    else:
+            is_zee5 = False
+            
+                
+    
     if(any(pattern in url for pattern in ["www.hotstar.com", "hotstar.com", "hotstar", "https://www.hotstar.com"])):
         is_hs = True 
         import json
@@ -703,6 +789,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             import xmltodict
             logging.info(r.content)
             import re
+            
             def kidr(text):
                 pattern = rb'cenc:default_KID="(.*?)"/>'
                 matches = re.findall(pattern, text)
@@ -710,9 +797,10 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                     print("kid fetch")
                     smaller_pssh = min(matches, key=len)
                     return smaller_pssh.strip().decode()
-                
+
+            kid = kidr(r.content)
             def extract_unique_pssh_and_kid(text):
-                kid = kidr(text)
+                
                 pattern = rb"<cenc:pssh>(.*?)</cenc:pssh>"
                 matches = re.findall(pattern, text)
                 if matches:
@@ -722,21 +810,8 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                     return {smaller_pssh.strip().decode():kyid}, smaller_pssh.strip().decode()
 
 
+            
             pssh_kid, to_use_pssh = extract_unique_pssh_and_kid(r.content)
-
-            
-
-            
-
-
-     
-
-
-
-
-
-
-            
             
 
         #    rid_kid, pssh_kid = jiocine.parseMPDData(periods)
@@ -874,8 +949,8 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                 print(url)
 
         
-    data = extractyt(url=url,ci=ci,is_dngplay=is_dngplay,is_sliv=is_sliv,is_hs=is_hs)
-    if (is_sliv and datasliv["isencrypted"]) or (is_hs and check_drm_hs(datahs)):
+    data = extractyt(url=url,ci=ci,is_dngplay=is_dngplay,is_sliv=is_sliv,is_hs=is_hs,is_zee5=is_zee5)
+    if (is_sliv and datasliv["isencrypted"]) or (is_hs and check_drm_hs(datahs) or (is_zee5)):
         rid_map = {}
         for lang in data['formats']:
             frmtid = lang['format_id']
