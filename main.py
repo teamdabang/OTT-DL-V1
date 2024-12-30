@@ -348,7 +348,9 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
             ydl_opts['http_headers'] = head
         else:
             is_sliv=False
-            
+
+        if(any(pattern in url for pattern in ["ZEE5"])):
+            output_name = "Zee5DL"
         if(any(pattern in url for pattern in ["dangalplay.com", "www.dangalplay.com", "dangalplay", "https://www.dangalplay.com"])):
             
             ydl_opts['username']='token'
