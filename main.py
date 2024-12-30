@@ -117,7 +117,7 @@ def extractyt(url=None,ci=None,is_dngplay=False,is_sliv=False,is_hs=False,is_zee
 
     elif is_hs:
         url = f'"{url}"'
-        subprocess.run(f"yt-dlp --allow-unplayable-formats --no-check-certificate --dump-json {url} > info{ci}.json",shell=True)
+        subprocess.run(f"yt-dlp --allow-unplayable-formats --no-check-certificate --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 --dump-json {url} > info{ci}.json",shell=True)
     else:
         url = f'"{url}"'
         subprocess.run(f"yt-dlp --allow-unplayable-formats --no-check-certificate --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 --dump-json {url} > info{ci}.json",shell=True)
