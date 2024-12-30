@@ -241,12 +241,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     temp_dir = realPath(joinPath(scriptsDir, config.get('tempPath')))
     ffmpegPath = realPath(joinPath(scriptsDir, config.get('ffmpegPath')))
-    if is_jc:
-    # Separate out baseUrl and Query
-        parsed_url = parse.urlparse(url)
-        base_url = url.replace(parsed_url.query, '')[:-1]
-        
-        query_head = parsed_url.query.replace("=", ":", 1).split(":")
+
     
     def speedmeter(d):
         if d['status'] == 'downloading':
@@ -254,9 +249,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
             status.edit(f"Download Progress: {percentage_str}")
     # Add more Headers
     if is_jc:
-      ydl_headers = {
-          query_head[0]: query_head[1]
-      }
+      ydl_headers = {}
       ydl_headers.update(jiocine.headers)
 
     ydl_opts = {
@@ -269,6 +262,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     }
     if is_jc:
         ydl_opts['http_headers'] = ydl_headers
+        base_url = url
     if is_hs:
         headersy = {
                       "Origin": "https://www.hotstar.com",
@@ -688,7 +682,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                 url = mpd
             else:
                 showid = url.split('/')[-3]
-                cntid = url.split('/')[-1]
+                ctnid = url.split('/')[-1]
                 datazee5 = requests.get(f"https://zee5-olive.vercel.app/zee5?id={ctnid}&type=EPISODE&show={showid}").json()
                 nl = datazee5['nl']
                 customdata = datazee5['customdata']
