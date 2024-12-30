@@ -694,7 +694,8 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                       "Referer": "https://www.zee5.com/",
                       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
             }
-            r = requests.get(url, headers=headersy)
+            proxy = {'http':'http://bobprakash4646:ivR8gSbjLN@103.172.85.130:49155','https':"http://bobprakash4646:ivR8gSbjLN@103.172.85.130:49155"}
+            r = requests.get(url, headers=headersy, proxies=proxy)
             import logging
             logging.info(r)
             import xmltodict
