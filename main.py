@@ -685,9 +685,9 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                 mpd = datazee5['mpd']
                 url = mpd
             else:
-                showid = url.split('/')[-1]
-                cntid = url.split('/')[-3]
-                datazee5 = requests.get(f"https://zee5-olive.vercel.app/zee5?id={ctnid}&type=SERIES&show={showid}").json()
+                showid = url.split('/')[-3]
+                cntid = url.split('/')[-1]
+                datazee5 = requests.get(f"https://zee5-olive.vercel.app/zee5?id={ctnid}&type=EPISODE&show={showid}").json()
                 nl = datazee5['nl']
                 customdata = datazee5['customdata']
                 mpd = datazee5['mpd']
@@ -759,7 +759,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                     kid = getkid(pssh_cache[pssh])
     else:
             is_zee5 = False
-            
+            license_url = None
                 
     
     if(any(pattern in url for pattern in ["www.hotstar.com", "hotstar.com", "hotstar", "https://www.hotstar.com"])):
