@@ -432,7 +432,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         outPath = res.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
         file_downloaded.append(f'{outPath}')
-        if fr in rid_map and has_drm:
+        if has_drm and fr in rid_map:
                                 _data = rid_map[fr]
                                 pssh = _data['pssh']
                                 kid = _data['kid'].lower()
