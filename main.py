@@ -427,7 +427,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     ydl_opts['outtmpl'] = output_name
     frmts = formats.split("+")
-    if 2<3:
+    if is_hs:
       for fr in frmts:
         r = detector(content_id,fr)
         if r == 1:
