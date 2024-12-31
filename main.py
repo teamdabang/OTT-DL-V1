@@ -557,7 +557,19 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
         rid_kid, pssh_kid = jiocine.parseMPDData(periods)
         print(pssh_kid)
         print(rid_kid)
-
+        if len(pssh_kid) > 0:
+            pass
+        else:
+            pattern = r'.*?<ContentProtection.*?" cenc:default_KID="(.*?)"/>.*?<cenc:pssh>(.*?)</cenc:pssh>.*?<Representation id="(.*?)".*?'
+            matches = re.findall(pattern, response.text, re.DOTALL)
+            
+# Create a list of dictionaries with the extracted values
+            rid_kid = {}
+            pssh_kid = {}
+            for match in matches:
+                pssh_kid 
+                rid_kid[match[2]]={'kid': match[0], 'pssh': match[1]}
+      
         # Proceed for DRM keys only if PSSH is there
         if len(pssh_kid) > 0:
             # Get the Decryption Keys into cache
