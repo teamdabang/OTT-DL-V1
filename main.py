@@ -398,10 +398,26 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
       for fr in frmts:
         ns = output + f'.{fr}' + '.%(ext)s'
         ydl_opts['outtmpl'] = ns
+        fmt_code = f".{fr}"
         
         ydl_opts['format'] = fr
         res = downloadformat(ydl_opts,base_url)
-        file_downloaded.append(f'{res}')
+        
+        outPath = res.replace(fmt_code, fmt_code + "dec")
+        pssh_cache = config.get("psshCacheStore")
+        file_downloaded.append(f'{outPath}')
+        if fr in rid_map:
+                                _data = rid_map[fr]
+                                pssh = _data['pssh']
+                                kid = _data['kid'].lower()
+
+                                if pssh in pssh_cache:
+                                    _data = pssh_cache[pssh]
+                                    print(f'{kid}:{_data[kid]}')
+                                    print('Decrypting Content')
+                                    status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {filepath}")
+                                    decrypt_vod_mp4d(kid, _data[kid], res, outPath)
+                                    
     else:
       link = url
     
