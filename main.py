@@ -427,13 +427,13 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     ydl_opts['outtmpl'] = output_name
     frmts = formats.split("+")
-    if is_hs:
+    if 2<3:
       for fr in frmts:
         r = detector(content_id,fr)
         if r == 1:
-            ns = "t" + f'.{fr}' + '.m4a'
+            ns = content_id + f'.{fr}' + '.m4a'
         else:
-            ns = "t" + f'.{fr}' + '.mp4'
+            ns = content_id + f'.{fr}' + '.mp4'
         ydl_opts['outtmpl'] = ns
         fmt_code = f".{fr}"
         import logging
