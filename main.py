@@ -233,6 +233,7 @@ def decrypt_vod_mp4d(kid, key, input_path, output_path):
     mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
     command = ["mp4decrypt", '--key', f"{kid}:{key}", input_path, output_path]
     process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
+    return "Done"
     
 
 
@@ -413,6 +414,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     output = f"{output_name}"
     ffout = output + '.mkv'
+    ffout = f'/usr/src/app/{ffout}'
     file_downloaded = []
     dc = {}
     output_name += '.%(ext)s'
@@ -451,11 +453,11 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         outPath = res.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
         if has_drm:
-            file_downloaded.append(f'{outPath}')
+            file_downloaded.append(f'/usr/src/app/{outPath}')
             dc[fr] = outPath
             dcr[fr] = res
         else:
-            file_downloaded.append(f'{res}')
+            file_downloaded.append(f'/usr/src/app/{res}')
             logging.info(f"res={res}")
       for fr in frmts:
         if has_drm and fr in rid_map:
@@ -466,11 +468,14 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                 if pssh in pssh_cache:
                                     _data = pssh_cache[pssh]
                                     logging.info(f'{kid}:{_data[kid]}')
+                                    dc[fr] = f'/usr/src/app/{dc[fr]}'
+                                    dcr[fr] = f'/usr/src/app/{dcr[fr]}'
                                     logging.info('Decrypting Content')
                                     status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {dcr[fr]}")
                                     try:
                                         logging.info(f"use {dcr[fr]} to {dc[fr]}")
-                                        decrypt_vod_mp4d(kid, _data[kid], dcr[fr], dc[fr])
+                                        timelapse = decrypt_vod_mp4d(kid, _data[kid], dcr[fr], dc[fr])
+                                        print(timelapse)
                                     except Exception as e:
                                         logging.info(e)
                                     try:
