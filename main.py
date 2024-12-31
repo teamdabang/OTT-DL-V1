@@ -253,6 +253,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
       ydl_headers.update(jiocine.headers)
       hheaders = {
     "authority": "ak-mediavod.jiocinema.com",
+    "range":"byte=0-",
     "accept": "*/*",
     "accept-language": "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7",
     "cache-control": "no-cache",
