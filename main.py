@@ -204,6 +204,8 @@ def mergeall(files,outpath):
             cmd += f'-map {i}:a? '
     cmd += f'-c:v copy -c:a copy \"{outpath}\" '
     process = subprocess.run(cmd, stderr=subprocess.PIPE, universal_newlines=True)
+    for i, res in enumerate(files):
+        os.remove(res)
     print("Merged Audios")
 
 def downloadformat(ydl_opts,url,info):
@@ -439,6 +441,16 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     decrypt_vod_mp4d(kid, _data[kid], res, outPath)
                                     os.remove(res)
       rd = mergeall(file_downloaded,ffout)
+      file_path = ffout
+      try:
+                from tg import tgUploader
+                uploader = tgUploader(app, ms, ms.chat.id)
+                up = uploader.upload_file(file_path)
+            except Exception as e:
+                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
+            
+      except yt_dlp.utils.DownloadError as e:
+        print(f"[!] Error Downloading Content: {e}")
                                     
     else:
       link = url
