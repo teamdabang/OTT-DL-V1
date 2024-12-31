@@ -414,6 +414,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     output = f"{output_name}"
     ffout = output + '.mkv'
     file_downloaded = []
+    dc = {}
     output_name += '.%(ext)s'
     import asyncio
     chatid = message.chat.id
@@ -427,6 +428,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     ydl_opts['outtmpl'] = output_name
     frmts = formats.split("+")
+    dcr = {}
+    import logging
     if is_hs:
       for fr in frmts:
         r = detector(content_id,fr)
@@ -435,8 +438,9 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         else:
             ns = content_id + f'.{fr}' + '.mp4'
         ydl_opts['outtmpl'] = ns
-        fmt_code = f".{fr}"
-        import logging
+        fmt_code = f"{fr}"
+        
+        logging.info(fmt_code)
         logging.info("Done fr")
         ydl_opts['format'] = fr
         try:
@@ -448,8 +452,11 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         pssh_cache = config.get("psshCacheStore")
         if has_drm:
             file_downloaded.append(f'{outPath}')
+            dc[fr] = outPath
+            dcr[fr] = res
         else:
             file_downloaded.append(f'{res}')
+      for fr in frmts:
         if has_drm and fr in rid_map:
                                 _data = rid_map[fr]
                                 pssh = _data['pssh']
@@ -457,11 +464,17 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
 
                                 if pssh in pssh_cache:
                                     _data = pssh_cache[pssh]
-                                    print(f'{kid}:{_data[kid]}')
-                                    print('Decrypting Content')
-                                    status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {res}")
-                                    decrypt_vod_mp4d(kid, _data[kid], res, outPath)
-                                    os.remove(res)
+                                    logging.info(f'{kid}:{_data[kid]}')
+                                    logging.info('Decrypting Content')
+                                    status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {dcr[fr]}")
+                                    try:
+                                        decrypt_vod_mp4d(kid, _data[kid], dcr[fr], dc[fr])
+                                    except Exception as e:
+                                        logging.info(e)
+                                    try:
+                                      os.remove(res)
+                                    except Exception:
+                                      logging.info("not found")
       try:
           rd = mergeall(file_downloaded,ffout)
       except Exception as e:
