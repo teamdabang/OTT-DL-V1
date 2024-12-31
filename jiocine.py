@@ -284,6 +284,8 @@ def getMPDData(mpd_url,is_hs=False):
         return None
 
     try:
+        import logging
+        logging.info(r.content)
         return xmltodict.parse(r.content)
     except Exception as e:
         print(f"[!] getMPDData: {e}")
@@ -295,11 +297,14 @@ def parseMPDData(mpd_per):
     # Extract PSSH and KID
     rid_kid = {}
     pssh_kid = {}
+    import logging
+    logging.info("pase mpd data")
 
     # Store KID to corresponding Widevine PSSH and Representation ID
     def readContentProt(rid, cp):
         _pssh = None
         if cp[1]["@schemeIdUri"].lower() == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed":
+            logging.info("found pssh")
             _pssh = cp[1]["cenc:pssh"]
 
         if _pssh:
@@ -308,6 +313,7 @@ def parseMPDData(mpd_per):
 
             if cp[0]['@value'].lower() == "cenc":
                 _kid = cp[0]["@cenc:default_KID"].replace("-", "")  # Cleanup
+                logging.info("found kid")
 
                 rid_kid[rid] = {
                     "kid": _kid,
