@@ -456,6 +456,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
             dcr[fr] = res
         else:
             file_downloaded.append(f'{res}')
+            logging.info(f"res={res}")
       for fr in frmts:
         if has_drm and fr in rid_map:
                                 _data = rid_map[fr]
@@ -468,6 +469,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     logging.info('Decrypting Content')
                                     status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {dcr[fr]}")
                                     try:
+                                        logging.info(f"use {dcr[fr]} to {dc[fr]}")
                                         decrypt_vod_mp4d(kid, _data[kid], dcr[fr], dc[fr])
                                     except Exception as e:
                                         logging.info(e)
