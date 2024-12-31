@@ -211,13 +211,12 @@ def mergeall(files,outpath):
     for i, audio in enumerate(files):
             cmd += f'-i \"{audio}\" '
     cmd += '-map 0:v '
-    for i in range(1, len(files)):
-            cmd += f'-map {i}:a? '
-    cmd += f'-c:v copy -c:a copy \"{outpath}\" '
+    cmd += '-map 0:a '
+   # for i in range(1, len(files)):
+        #    cmd += f'-map {i}:a? '
+    cmd += f'-c copy \"{outpath}\" '
     process = subprocess.run(cmd, stderr=subprocess.PIPE, universal_newlines=True,shell=True)
-    for i, res in enumerate(files):
-        os.remove(res)
-    print("Merged Audios")
+    
 
 def downloadformat(ydl_opts,url,info):
     
@@ -479,7 +478,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     except Exception as e:
                                         logging.info(e)
                                     try:
-                                      os.remove(res)
+                                      pass
+                                    #  os.remove(res)
                                     except Exception:
                                       logging.info("not found")
       try:
@@ -537,6 +537,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     self.to_screen(f'{kid}:{_data[kid]}')
                                     self.to_screen('Decrypting Content')
                                     status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {filepath}")
+                                    self.to_screen(filepath)
+                                    self.to_screen(outPath)
                                     decrypt_vod_mp4d(kid, _data[kid], filepath, outPath)
                                     del_paths.append(filepath)
                                     dec_paths.append(outPath)
