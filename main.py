@@ -196,7 +196,7 @@ def fetch_widevine_keys(pssh_kid_map, content_playback, playback_data):
             config.set("psshCacheStore", pssh_cache)
 # Use mp4decrypt to decrypt vod(video on demand) using kid:key
 def detector(ci,fr):
-    with open(f"info{ci}",r) as file:
+    with open(f"info{ci}","r") as file:
         
         data = json.load(file)
         for frm in data:
