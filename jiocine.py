@@ -303,7 +303,7 @@ def getMPDData(mpd_url,is_hs=False):
     try:
         import logging
         logging.info(r.content)
-        return xmltodict.parse(r.content)
+        return xmltodict.parse(r.content), r.text
     except Exception as e:
         print(f"[!] getMPDData: {e}")
         return None
