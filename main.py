@@ -418,7 +418,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     frmts = formats.split("+")
     if is_hs:
       for fr in frmts:
-        ns = output + f'.{fr}' + '.%(ext)s'
+        ns = "t" + f'.{fr}' + '.%(ext)s'
         ydl_opts['outtmpl'] = ns
         fmt_code = f".{fr}"
         import logging
