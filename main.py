@@ -428,7 +428,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         outPath = res.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
         file_downloaded.append(f'{outPath}')
-        if fr in rid_map:
+        if fr in rid_map and has_drm:
                                 _data = rid_map[fr]
                                 pssh = _data['pssh']
                                 kid = _data['kid'].lower()
@@ -446,11 +446,10 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                 from tg import tgUploader
                 uploader = tgUploader(app, ms, ms.chat.id)
                 up = uploader.upload_file(file_path)
-            except Exception as e:
+      except Exception as e:
                 print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
             
-      except yt_dlp.utils.DownloadError as e:
-        print(f"[!] Error Downloading Content: {e}")
+      
                                     
     else:
       link = url
