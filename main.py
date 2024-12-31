@@ -251,24 +251,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     if is_jc:
       ydl_headers = {}
       ydl_headers.update(jiocine.headers)
-      hheaders = {
-    "authority": "ak-mediavod.jiocinema.com",
-    "range":"byte=0-",
-    "accept": "*/*",
-    "accept-language": "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7",
-    "cache-control": "no-cache",
-    "origin": "https://www.jiocinema.com",
-    "pragma": "no-cache",
-    "referer": "https://www.jiocinema.com/",
-    "sec-ch-ua": "\"Not-A.Brand\";v=\"99\", \"Chromium\";v=\"124\"",
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": "\"Android\"",
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-site",
-    "user-agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-          }
-
+      
     ydl_opts = {
         'no_warnings': True,
         'nocheckcertificate': True,
@@ -278,8 +261,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         
     }
     if is_jc:
-        ydl_opts['headers'] = hheaders
-        ydl_opts['http_headers'] = hheaders
+        
+        ydl_opts['http_headers'] = ydl_headers
         base_url = url
     if is_hs:
         headersy = {
@@ -396,6 +379,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     output_name += '.x264'
     
     output = f"{output_name}"
+    ffout = output
+    file_downloaded = []
     output_name += '.%(ext)s'
     import asyncio
     chatid = message.chat.id
@@ -409,10 +394,19 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     ydl_opts['outtmpl'] = output_name
     frmts = formats.split("+")
-    link = url
+    if is_hs:
+      for fr in frmts:
+        ns = output + f'.{fr}' + '.%(ext)s'
+        ydl_opts['outtmpl'] = ns
+        
+        ydl_opts['format'] = fr
+        res = downloadformat(ydl_opts,base_url)
+        file_downloaded.append(f'{res}')
+    else:
+      link = url
     
      # aria = subprocess.run(f"yt-dlp -f {dejc} -o downloads/temp/{dest} --external-downloader aria2c --proxy http://bobprakash4646:ivR8gSbjLN@103.171.50.159:49155 {link} --allow-unplayable-formats")
-    try:
+      try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             # Custom Decryter for DRM Vids
             if has_drm:
@@ -490,7 +484,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                 up = uploader.upload_file(file_path)
             except Exception as e:
                 print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
-    except yt_dlp.utils.DownloadError as e:
+      except yt_dlp.utils.DownloadError as e:
         print(f"[!] Error Downloading Content: {e}")
 
 
