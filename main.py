@@ -421,9 +421,13 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         ns = output + f'.{fr}' + '.%(ext)s'
         ydl_opts['outtmpl'] = ns
         fmt_code = f".{fr}"
-        
+        import logging
+        logging.info("Done fr")
         ydl_opts['format'] = fr
-        res = downloadformat(ydl_opts,base_url,content_info)
+        try:
+            res = downloadformat(ydl_opts,base_url,content_info)
+        except Exception as e:
+            logging.info(f"error in fr {e}")
         
         outPath = res.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
@@ -440,7 +444,10 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {res}")
                                     decrypt_vod_mp4d(kid, _data[kid], res, outPath)
                                     os.remove(res)
-      rd = mergeall(file_downloaded,ffout)
+      try:
+          rd = mergeall(file_downloaded,ffout)
+      except Exception as e:
+            logging.info(f"error in ffmpeg {e}")
       file_path = ffout
       try:
                 from tg import tgUploader
