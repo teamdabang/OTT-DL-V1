@@ -195,6 +195,26 @@ def fetch_widevine_keys(pssh_kid_map, content_playback, playback_data):
             pssh_cache[pssh] = requests.get(url='https://hls-proxifier-sage.vercel.app/jc',headers={"pyid":content_playback["playbackId"],"url":playback_data["licenseurl"],"pssh":pssh}).json()["keys"]
             config.set("psshCacheStore", pssh_cache)
 # Use mp4decrypt to decrypt vod(video on demand) using kid:key
+def mergeall(files,outpath):
+    cmd = f'ffmpeg -y '
+    for i, audio in enumerate(files):
+            cmd += f'-i \"{audio}\" '
+    cmd += '-map 0:v '
+    for i in range(1, len(files)):
+            cmd += f'-map {i}:a? '
+    cmd += f'-c:v copy -c:a copy \"{outpath}\" '
+    process = subprocess.run(cmd, stderr=subprocess.PIPE, universal_newlines=True)
+    print("Merged Audios")
+
+def downloadformat(ydl_opts,url,info):
+    
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+        file_path = ydl.prepare_filename(info)
+        return file_path
+        
+    
+        
 def decrypt_vod_mp4d(kid, key, input_path, output_path):
     # Create mp4decrypt command
     mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
@@ -401,7 +421,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         fmt_code = f".{fr}"
         
         ydl_opts['format'] = fr
-        res = downloadformat(ydl_opts,base_url)
+        res = downloadformat(ydl_opts,base_url,content_info)
         
         outPath = res.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
