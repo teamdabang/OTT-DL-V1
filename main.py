@@ -544,7 +544,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
         # Download MPD manifest for PSSH
         print(f'[=>] Getting MPD manifest data')
 
-        mpd_data = jiocine.getMPDData(playback_data["url"])
+        mpd_data, reso = jiocine.getMPDData(playback_data["url"])
         if not mpd_data:
             print("[!] Failed to get MPD manifest")
             exit(0)
@@ -560,12 +560,16 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
         if len(pssh_kid) > 0:
             pass
         else:
-            pattern = r'.*?<ContentProtection.*?" cenc:default_KID="(.*?)"/>.*?<cenc:pssh>(.*?)</cenc:pssh>.*?<Representation id="(.*?)".*?'
-            matches = re.findall(pattern, response.text, re.DOTALL)
             
-# Create a list of dictionaries with the extracted values
-            rid_kid = {}
             pssh_kid = {}
+            # Extract PSSH and KID values using regular expressions
+            pssh_pattern = r'<cenc:pssh>(.*?)</cenc:pssh>'
+            pssh_matches = list(set(re.findall(pssh_pattern, reso)))
+            for i, pssh in enumerate(pssh_matches):
+                pssh_kid[pssh]={f'i'}
+            pattern = r'.*?<ContentProtection.*?" cenc:default_KID="(.*?)"/>.*?<cenc:pssh>(.*?)</cenc:pssh>.*?<Representation id="(.*?)".*?'
+            matches = re.findall(pattern, reso, re.DOTALL)
+            rid_kid = {}
             for match in matches:
                 pssh_kid 
                 rid_kid[match[2]]={'kid': match[0], 'pssh': match[1]}
