@@ -251,6 +251,22 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     if is_jc:
       ydl_headers = {}
       ydl_headers.update(jiocine.headers)
+      hheaders = {
+    "authority": "ak-mediavod.jiocinema.com",
+    "accept": "*/*",
+    "accept-language": "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7",
+    "cache-control": "no-cache",
+    "origin": "https://www.jiocinema.com",
+    "pragma": "no-cache",
+    "referer": "https://www.jiocinema.com/",
+    "sec-ch-ua": "\"Not-A.Brand\";v=\"99\", \"Chromium\";v=\"124\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Android\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-site",
+    "user-agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+          }
 
     ydl_opts = {
         'no_warnings': True,
@@ -261,7 +277,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         
     }
     if is_jc:
-        ydl_opts['http_headers'] = ydl_headers
+        ydl_opts['headers'] = hheaders
         base_url = url
     if is_hs:
         headersy = {
