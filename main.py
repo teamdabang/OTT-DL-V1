@@ -199,7 +199,7 @@ def detector(ci,fr):
     with open(f"info{ci}.json","r") as file:
         
         data = json.load(file)
-        for frm in data:
+        for frm in data['formats']:
             frmid = frm['format_id']
             if frmid == fr:
                 if frm['resolution'] == "audio only":
