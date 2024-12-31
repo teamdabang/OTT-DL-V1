@@ -284,7 +284,7 @@ def getMPDData(mpd_url,is_hs=False):
         return None
 
     try:
-        return xmltodict.parse(r.text)
+        return xmltodict.parse(r.content)
     except Exception as e:
         print(f"[!] getMPDData: {e}")
         return None
