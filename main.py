@@ -203,7 +203,7 @@ def mergeall(files,outpath):
     for i in range(1, len(files)):
             cmd += f'-map {i}:a? '
     cmd += f'-c:v copy -c:a copy \"{outpath}\" '
-    process = subprocess.run(cmd, stderr=subprocess.PIPE, universal_newlines=True)
+    process = subprocess.run(cmd, stderr=subprocess.PIPE, universal_newlines=True,shell=True)
     for i, res in enumerate(files):
         os.remove(res)
     print("Merged Audios")
