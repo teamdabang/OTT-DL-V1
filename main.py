@@ -195,6 +195,17 @@ def fetch_widevine_keys(pssh_kid_map, content_playback, playback_data):
             pssh_cache[pssh] = requests.get(url='https://hls-proxifier-sage.vercel.app/jc',headers={"pyid":content_playback["playbackId"],"url":playback_data["licenseurl"],"pssh":pssh}).json()["keys"]
             config.set("psshCacheStore", pssh_cache)
 # Use mp4decrypt to decrypt vod(video on demand) using kid:key
+def detector(ci,fr):
+    with open(f"info{ci}",r) as file:
+        
+        data = json.load(file)
+        for frm in data:
+            frmid = frm['format_id']
+            if frmid == fr:
+                if frm['resolution'] == "audio only":
+                    return 1
+                else:
+                    return 2
 def mergeall(files,outpath):
     cmd = f'ffmpeg -y '
     for i, audio in enumerate(files):
@@ -418,7 +429,11 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     frmts = formats.split("+")
     if is_hs:
       for fr in frmts:
-        ns = "t" + f'.{fr}' + '.%(ext)s'
+        r = detector(content_id,fr)
+        if r == 1:
+            ns = "t" + f'.{fr}' + '.m4a'
+        else:
+            ns = "t" + f'.{fr}' + '.mp4'
         ydl_opts['outtmpl'] = ns
         fmt_code = f".{fr}"
         import logging
