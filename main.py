@@ -379,7 +379,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     output_name += '.x264'
     
     output = f"{output_name}"
-    ffout = output
+    ffout = output + '.mkv'
     file_downloaded = []
     output_name += '.%(ext)s'
     import asyncio
@@ -415,8 +415,10 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     _data = pssh_cache[pssh]
                                     print(f'{kid}:{_data[kid]}')
                                     print('Decrypting Content')
-                                    status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {filepath}")
+                                    status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {res}")
                                     decrypt_vod_mp4d(kid, _data[kid], res, outPath)
+                                    os.remove(res)
+      rd = mergeall(file_downloaded,ffout)
                                     
     else:
       link = url
