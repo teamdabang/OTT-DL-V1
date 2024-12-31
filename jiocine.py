@@ -218,28 +218,36 @@ def fetchPlaybackDataold(content_id, token):
     playData = {
         "4k": True,
         "ageGroup": "18+",
-        "appVersion": "23.12.182-c14ad2f",
-        "bitrateProfile": "xxxhdpi",
+        "appVersion": "3.4.0",
+        "bitrateProfile": "xxhdpi",
         "capability": {
             "drmCapability": {
-                "aesSupport": "none",
-                "fairPlayDrmSupport": "L1",
-                "playreadyDrmSupport": "none",
-                "widevineDRMSupport": "L1"
+                "aesSupport": "yes",
+                "fairPlayDrmSupport": "none",
+                "playreadyDrmSupport": "yes",
+                "widevineDRMSupport": "yes"
             },
-            "frameRateCapability": []
+            "frameRateCapability": [
+                {
+                    "frameRateSupport": "50fps",
+                    "videoQuality": "2160p"
+                }
+            ]
         },
         "continueWatchingRequired": False,
         "dolby": True,
         "downloadRequest": False,
         "hevc": True,
         "kidsSafe": False,
-        "manufacturer": "INFINIX",
-        "model": "INFINIX",
+        "manufacturer": "Android",
+        "model": "Android",
         "multiAudioRequired": True,
-        "osVersion": "13",
-        "parentalPinValid": True,
-        "x-apisignatures": "o668nxgzwff"# Web: o668nxgzwff, FTV: 38bb740b55f, JIOSTB: e882582cc55, ATV: d0287ab96d76
+        "osVersion": "10",
+        "parentalPinValid": False,
+        "x-apisignatures": "o668nxgzwff",
+        "deviceRange": "",
+        "networkType": "4g",
+        "deviceMemory": 4096  # Web: o668nxgzwff, FTV: 38bb740b55f, JIOSTB: e882582cc55, ATV: d0287ab96d76
     }
     playHeaders = {
         "authority": "apis-jiovoot.voot.com",
