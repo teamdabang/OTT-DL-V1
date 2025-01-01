@@ -215,7 +215,7 @@ def mergeall(files,outpath):
    # for i in range(1, len(files)):
         #    cmd += f'-map {i}:a? '
     cmd += f'-c copy \"{outpath}\" '
-    process = subprocess.run(cmd, stderr=subprocess.PIPE, universal_newlines=True,shell=True)
+    process = subprocess.run(cmd, shell=True)
     
 
 def downloadformat(ydl_opts,url,info):
@@ -231,7 +231,7 @@ def decrypt_vod_mp4d(kid, key, input_path, output_path):
     # Create mp4decrypt command
     mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
     command = ["mp4decrypt", '--key', f"{kid}:{key}", input_path, output_path]
-    process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
+    process = subprocess.run(command, shell=True)
     return "Done"
     
 
@@ -452,11 +452,11 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         outPath = res.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
         if has_drm:
-            file_downloaded.append(f'/usr/src/app/downloads/{outPath}')
+            file_downloaded.append(f'{outPath}')
             dc[fr] = outPath
             dcr[fr] = res
         else:
-            file_downloaded.append(f'/usr/src/app/downloads/{res}')
+            file_downloaded.append(f'{res}')
             logging.info(f"res={res}")
       for fr in frmts:
         if has_drm and fr in rid_map:
@@ -467,8 +467,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                 if pssh in pssh_cache:
                                     _data = pssh_cache[pssh]
                                     logging.info(f'{kid}:{_data[kid]}')
-                                    dc[fr] = f'/usr/src/app/downloads/{dc[fr]}'
-                                    dcr[fr] = f'/usr/src/app/downloads/{dcr[fr]}'
+                                    dc[fr] = f'{dc[fr]}'
+                                    dcr[fr] = f'{dcr[fr]}'
                                     logging.info('Decrypting Content')
                                     status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {dcr[fr]}")
                                     try:
