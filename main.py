@@ -131,7 +131,7 @@ def extractyt(url=None,ci=None,is_dngplay=False,is_sliv=False,is_hs=False,is_zee
 
 app = Client(
     "jiocinemaripbot",
-    bot_token="7843346619:AAHIt27qwcTMmY5-vaF_O_e8q_gOAAyeTOQ",
+    bot_token="7574472282:AAEJ_T_pE6ZXnVZnxSIrW75XVvvYoSZU0FU",
     api_id="5360874",
     api_hash="4631f40a1b26c2759bf1be4aff1df710",
     sleep_threshold=30
