@@ -10,6 +10,7 @@ import subprocess
 from pyrogram import Client, filters, idle
 from urllib import parse
 import logging
+import os
 from base64 import b64decode, b64encode
 from yt_dlp.postprocessor import PostProcessor
 from utils import scriptsDir, joinPath, realPath
@@ -251,6 +252,7 @@ def merge_vod_ffmpeg(in_video, in_audio, output_path):
 # Use yt-dlp to download vod(video on demand) as m3u8 or dash streams into a video file
 def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_drm=False, rid_map=None,is_jc=True):
     global default_res
+    import os
     status = app.send_message(message.chat.id, f"[+] Downloading")
     ci = content_id
     with open(f"{user_id}.json",'r') as f:
