@@ -433,12 +433,14 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     import logging
     if is_hs:
       for fr in frmts:
+        
+        ydl_opts['paths']['home'] = "/usr/src/app/downloads"
         r = detector(content_id,fr)
         if r == 1:
             ns = content_id + f'.{fr}' + '.m4a'
         else:
             ns = content_id + f'.{fr}' + '.mp4'
-        ydl_opts['outtmpl'] = ns
+        ydl_opts['outtmpl'] = "/usr/src/app/downloads/" + ns
         fmt_code = f"{fr}"
         
         logging.info(fmt_code)
@@ -452,10 +454,12 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         outPath = res.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
         if has_drm:
+            logging.info(outPath)
             file_downloaded.append(f'/usr/src/app/downloads/{outPath}')
             dc[fr] = outPath
             dcr[fr] = res
         else:
+            logging.info(res)
             file_downloaded.append(f'/usr/src/app/downloads/{res}')
             logging.info(f"res={res}")
       for fr in frmts:
