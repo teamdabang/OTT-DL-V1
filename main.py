@@ -452,11 +452,11 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         outPath = res.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
         if has_drm:
-            file_downloaded.append(f'/usr/src/app/{outPath}')
+            file_downloaded.append(f'/usr/src/app/downloads/{outPath}')
             dc[fr] = outPath
             dcr[fr] = res
         else:
-            file_downloaded.append(f'/usr/src/app/{res}')
+            file_downloaded.append(f'/usr/src/app/downloads/{res}')
             logging.info(f"res={res}")
       for fr in frmts:
         if has_drm and fr in rid_map:
@@ -467,8 +467,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                 if pssh in pssh_cache:
                                     _data = pssh_cache[pssh]
                                     logging.info(f'{kid}:{_data[kid]}')
-                                    dc[fr] = f'/usr/src/app/{dc[fr]}'
-                                    dcr[fr] = f'/usr/src/app/{dcr[fr]}'
+                                    dc[fr] = f'/usr/src/app/downloads/{dc[fr]}'
+                                    dcr[fr] = f'/usr/src/app/downloads/{dcr[fr]}'
                                     logging.info('Decrypting Content')
                                     status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {dcr[fr]}")
                                     try:
