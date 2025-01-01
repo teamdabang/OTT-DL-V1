@@ -209,12 +209,14 @@ def detector(ci,fr):
 def mergeall(files,outpath):
     cmd = f'ffmpeg -y '
     for i, audio in enumerate(files):
-            cmd += f'-i \"{audio}\" '
+            cmd += f'-i "{audio}" '
     cmd += '-map 0:v '
     cmd += '-map 0:a '
    # for i in range(1, len(files)):
         #    cmd += f'-map {i}:a? '
-    cmd += f'-c copy \"{outpath}\" '
+    cmd += f'-c copy "{outpath}" '
+    import logging
+    logging.info("merged")
     process = subprocess.run(cmd, shell=True)
     return 1
     
@@ -464,7 +466,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
             logging.info(outPath)
 
             logging.info(f"res={res}")
-      for fr in frmts:
+      
         if has_drm and fr in rid_map:
                                 _data = rid_map[fr]
                                 pssh = _data['pssh']
@@ -479,8 +481,9 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {dcr[fr]}")
                                     try:
                                         logging.info(f"use {dcr[fr]} to {dc[fr]}")
-                                        timelapse = decrypt_vod_mp4d(kid, _data[kid], dcr[fr], dc[fr])
-                                        print(timelapse)
+                                        command = ["mp4decrypt", '--key', f"{kid}:{_data[kid]}", dcr[fr], dc[fr]]
+                                        process = subprocess.run(command, shell=True)
+                                        print("Done Decrypt")
                                     except Exception as e:
                                         logging.info(e)
                                     try:
@@ -489,6 +492,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     except Exception:
                                       logging.info("not found")
       try:
+          logging.info("Merging")
           rd = mergeall(file_downloaded,ffout)
           print(rd)
       except Exception as e:
