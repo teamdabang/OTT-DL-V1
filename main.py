@@ -216,6 +216,7 @@ def mergeall(files,outpath):
         #    cmd += f'-map {i}:a? '
     cmd += f'-c copy \"{outpath}\" '
     process = subprocess.run(cmd, shell=True)
+    return 1
     
 
 def downloadformat(ydl_opts,url,info):
@@ -433,12 +434,14 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     import logging
     if is_hs:
       for fr in frmts:
+        
+        ydl_opts['paths']['home'] = "/usr/src/app/downloads"
         r = detector(content_id,fr)
         if r == 1:
             ns = content_id + f'.{fr}' + '.m4a'
         else:
             ns = content_id + f'.{fr}' + '.mp4'
-        ydl_opts['outtmpl'] = ns
+        ydl_opts['outtmpl'] = "/usr/src/app/downloads/" + ns
         fmt_code = f"{fr}"
         
         logging.info(fmt_code)
@@ -452,11 +455,14 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         outPath = res.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
         if has_drm:
+
             file_downloaded.append(f'{outPath}')
             dc[fr] = outPath
             dcr[fr] = res
         else:
             file_downloaded.append(f'{res}')
+            logging.info(outPath)
+
             logging.info(f"res={res}")
       for fr in frmts:
         if has_drm and fr in rid_map:
@@ -484,6 +490,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                       logging.info("not found")
       try:
           rd = mergeall(file_downloaded,ffout)
+          print(rd)
       except Exception as e:
             logging.info(f"error in ffmpeg {e}")
       file_path = ffout
