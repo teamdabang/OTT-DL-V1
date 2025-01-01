@@ -211,7 +211,7 @@ def mergeall(files,outpath):
     for i, audio in enumerate(files):
             cmd += f'-i "{audio}" '
     cmd += '-map 0:v '
-    cmd += '-map 0:a '
+    cmd += '-map 0:a? '
    # for i in range(1, len(files)):
         #    cmd += f'-map {i}:a? '
     cmd += f'-c copy "{outpath}" '
