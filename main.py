@@ -131,7 +131,7 @@ def extractyt(url=None,ci=None,is_dngplay=False,is_sliv=False,is_hs=False,is_zee
 
 app = Client(
     "jiocinemaripbot",
-    bot_token="7574472282:AAEJ_T_pE6ZXnVZnxSIrW75XVvvYoSZU0FU",
+    bot_token="7843346619:AAHIt27qwcTMmY5-vaF_O_e8q_gOAAyeTOQ",
     api_id="5360874",
     api_hash="4631f40a1b26c2759bf1be4aff1df710",
     sleep_threshold=30
@@ -212,10 +212,13 @@ def mergeall(files,outpath):
     for i, audio in enumerate(files):
             cmd += f'-i "{audio}" '
     cmd += '-map 0:v '
-    cmd += '-map 0:a? '
-   # for i in range(1, len(files)):
-        #    cmd += f'-map {i}:a? '
-    cmd += f'-c copy "{outpath}" '
+#ffmpeg -i input.mp4 -map 0:v -map 0:a:0 -map 0:a:1 -map 0:a:2 -c:v copy -c:a copy output.mp4
+#for i in range(len(self.audio_data)):
+#            ffmpeg_opts.extend(["-map", f"{i+1}:a:0"])
+#    cmd += '-map 0:a:0? '
+    for i in range(len(files)-1):
+       cmd += f'-map {i+1}:a:0 '
+    cmd += f'-c:v copy -c:a copy "{outpath}" '
     import logging
     logging.info("merged")
     process = subprocess.run(cmd, shell=True)
@@ -418,7 +421,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     output = f"{output_name}"
     ffout = output + '.mkv'
-    ffout = f'/usr/src/app/{ffout}'
+    ffout = f'{ffout}'
     file_downloaded = []
     dc = {}
     output_name += '.%(ext)s'
@@ -439,14 +442,17 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     if is_hs:
       for fr in frmts:
         ydl_opts['postprocessors'] = []
-        
-        ydl_opts['paths']['home'] = "/usr/src/app/downloads"
+        ydl_opts['fixup'] = 'never'
+        ydl_opts['recode'] = False
+#        ydl_opts['paths']['home'] = "downloads"
         r = detector(content_id,fr)
         if r == 1:
-            ns = content_id + f'.{fr}' + '.m4a'
+            ns = content_id + f'.{fr}' + '.%(ext)s'
+            use = content_id + f'.{fr}' + '.m4a'
         else:
-            ns = content_id + f'.{fr}' + '.mp4'
-        ydl_opts['outtmpl'] = "/usr/src/app/downloads/" + ns
+            ns = content_id + f'.{fr}' + '.%(ext)s'
+            use = content_id + f'.{fr}' + '.mp4'
+        ydl_opts['outtmpl'] = ns
         fmt_code = f"{fr}"
         
         logging.info(fmt_code)
@@ -457,15 +463,15 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         except Exception as e:
             logging.info(f"error in fr {e}")
         
-        outPath = res.replace(fmt_code, fmt_code + "dec")
+        outPath = use.replace(fmt_code, fmt_code + "dec")
         pssh_cache = config.get("psshCacheStore")
         if has_drm:
 
             file_downloaded.append(f'{outPath}')
             dc[fr] = outPath
-            dcr[fr] = res
+            dcr[fr] = use
         else:
-            file_downloaded.append(f'{res}')
+            file_downloaded.append(f'{use}')
             logging.info(outPath)
 
             logging.info(f"res={res}")
