@@ -481,7 +481,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {dcr[fr]}")
                                     try:
                                         logging.info(f"use {dcr[fr]} to {dc[fr]}")
-                                        command = ["mp4decrypt", '--key', f"{kid}:{_data[kid]}", dcr[fr], dc[fr]]
+                                        command = f'mp4decrypt --key "{kid}:{_data[kid]}" "{dcr[fr]}" "{dc[fr]}"'
                                         process = subprocess.run(command, shell=True)
                                         print("Done Decrypt")
                                     except Exception as e:
