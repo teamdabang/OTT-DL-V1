@@ -624,7 +624,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                 print("File Uploaded")
             except Exception as e:
                 print(f"UPLOADING failed Contact Developer @maheshsirop{e}")
-    except yt_dlp.utils.DownloadError as e:
+      except yt_dlp.utils.DownloadError as e:
         print(f"[!] Error Downloading Content: {e}")
 
 
