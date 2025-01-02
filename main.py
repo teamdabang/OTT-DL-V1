@@ -210,6 +210,7 @@ def detector(ci,fr):
 def mergeall(files,outpath):
     cmd = f'ffmpeg -y '
     for i, audio in enumerate(files):
+            
             cmd += f'-i "{audio}" '
     cmd += '-map 0:v '
 #ffmpeg -i input.mp4 -map 0:v -map 0:a:0 -map 0:a:1 -map 0:a:2 -c:v copy -c:a copy output.mp4
@@ -498,7 +499,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                         try:
                                            # command = f'mp4decrypt --key "{kid}:{_data[kid]}" "{dcr[fr]}" "{dc[fr]}"'
                                             command = ['mp4decrypt', '--key', f"{kid}:{_data[kid]}", dcr[fr], dc[fr]]
-                                            process = subprocess.run(command, check=True)
+                                            process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
                                         except subprocess.CalledProcessError as e:
                                             logging.info(e)
                                         
