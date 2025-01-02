@@ -16,7 +16,21 @@ from yt_dlp.postprocessor import PostProcessor
 from utils import scriptsDir, joinPath, realPath
 from asyncio import create_subprocess_exec, create_subprocess_shell, run_coroutine_threadsafe, sleep
 #from button import ButtonMaker
-LOG_FILE = "log.txt"
+LOG_FILE = "lo                from tg import tgUploader
+                uploader = tgUploader(app, ms, ms.chat.id)
+                up = uploader.upload_file(file_path)
+            except Exception as e:
+                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
+            try:
+                #file_path = ydl.prepare_filename(content_info)
+                file_path = file_path[:-1][:-1][:-1][:-1]+".mkv"
+                from tg import tgUploader
+                uploader = tgUploader(app, ms, ms.chat.id)
+                up = uploader.upload_file(file_path)
+            except Exception as e:
+                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
+      except yt_dlp.utils.DownloadError as e:
+        print(f"[!] Error Downloading Content: {e}")g.txt"
 logging.basicConfig(
     format="[%(asctime)s] [%(levelname)s] - %(message)s",
     datefmt="%d-%b-%y %I:%M:%S %p",
@@ -36,7 +50,7 @@ if not utils.isExist(configPath):
 default_res = ""
 default_strm = ''
 config = utils.JSO(configPath, 4)
-sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467]
+sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467, 1195351595, 7361945688]
 
 class ButtonMaker:
     def __init__(self):
@@ -130,8 +144,8 @@ def extractyt(url=None,ci=None,is_dngplay=False,is_sliv=False,is_hs=False,is_zee
 # Generate main config file from definition config before starting
 
 app = Client(
-    "jiocinemaripbot",
-    bot_token="7574472282:AAEJ_T_pE6ZXnVZnxSIrW75XVvvYoSZU0FU",
+    "Hinata_ott_downloader_bot",
+    bot_token="8198617358:AAEEezx06YR3VOk1Q15FElzzMZLKHLb8hoU",
     api_id="5360874",
     api_hash="4631f40a1b26c2759bf1be4aff1df710",
     sleep_threshold=30
@@ -413,7 +427,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         pass
     output_name += f'.{language}'
     output_name += '.WEB-DL-JC'
-    output_name += ".@aryanchy451"
+    output_name += ".@maheshsirop"
     
 
     # Audio Codec
@@ -530,7 +544,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     else:
       link = url
     
-     # aria = subprocess.run(f"yt-dlp -f {dejc} -o downloads/temp/{dest} --external-downloader aria2c --proxy http://bobprakash4646:ivR8gSbjLN@103.171.50.159:49155 {link} --allow-unplayable-formats")
+     # aria = subprocess.run(f"yt-dlp -f {dejc} -o downloads/temp/{dest} --external-downloader aria2c --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 {link} --allow-unplayable-formats")
       try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             # Custom Decryter for DRM Vids
@@ -600,20 +614,31 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
             file_path = ydl.prepare_filename(content_info)
             config.set("authToken","")
             try:
-                from tg import tgUploader
-                uploader = tgUploader(app, ms, ms.chat.id)
-                up = uploader.upload_file(file_path)
+                out_file_name = file_path
+    
+                ms.edit("Uploading To Google Drive")
+                import time
+                from gdrive import GoogleDriveUploader
+                srt = time.time()
+                upload_path = "BOT Uploads/{}/{}".format("OTTDOWNLOAD", "Driver")
+                uploader = GoogleDriveUploader(app, ms, srt)
+                uploader.upload_file(out_file_name, upload_path)
+                print("File Uploaded")
             except Exception as e:
-                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
+                print(f"UPLOADING failed Contact Developer @maheshsirop{e}")
             try:
                 #file_path = ydl.prepare_filename(content_info)
                 file_path = file_path[:-1][:-1][:-1][:-1]+".mkv"
-                from tg import tgUploader
-                uploader = tgUploader(app, ms, ms.chat.id)
-                up = uploader.upload_file(file_path)
+                from gdrive import GoogleDriveUploader
+                import time
+                upload_path = "BOT Uploads/{}/{}".format("OTTDOWNLOAD", "Driver")
+                srt = time.time()
+                uploader = GoogleDriveUploader(app, ms, srt)
+                uploader.upload_file(file_path, upload_path)
+                print("File Uploaded")
             except Exception as e:
-                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
-      except yt_dlp.utils.DownloadError as e:
+                print(f"UPLOADING failed Contact Developer @maheshsirop{e}")
+    except yt_dlp.utils.DownloadError as e:
         print(f"[!] Error Downloading Content: {e}")
 
 
@@ -674,7 +699,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
     
     print(f'[*] URL: {playback_data["url"]}')
     try:
-            app.send_message(7126874550,f"<code>{playback_data['url']}</code> and By user {user_id}")
+            app.send_message(1596559467,f"<code>{playback_data['url']}</code> and By user {user_id}")
     except Exception:
             pass
     print(f'[*] Encryption: {playback_data["encryption"]}')
@@ -851,7 +876,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                       "Referer": "https://www.zee5.com/",
                       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
             }
-            proxy = {'http':'http://bobprakash4646:ivR8gSbjLN@103.172.85.130:49155','https':"http://bobprakash4646:ivR8gSbjLN@103.172.85.130:49155"}
+            proxy = {'http':'http://toonrips:xipTsP9H9s@103.171.51.246:50100','http://toonrips:xipTsP9H9s@103.171.51.246:50100"}
             r = requests.get(url, headers=headersy, proxies=proxy)
             import logging
             logging.info(r)
@@ -929,7 +954,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         datahs = requests.get(url=f"https://hls-proxifier-sage.vercel.app/hotstar?type={type}", headers=headers).json()
         url = datahs["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["primary"]["content_url"]
         try:
-            app.send_message(7126874550,f"<code>{url}</code> and By user {user_id}")
+            app.send_message(1596559467,f"<code>{url}</code> and By user {user_id}")
         except Exception:
             pass
         if check_drm_hs(datahs):
@@ -940,7 +965,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                       "Referer": "https://www.hotstar.com/",
                       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
             }
-            proxy = {'http':'http://bobprakash4646:ivR8gSbjLN@103.172.85.130:49155','https':"http://bobprakash4646:ivR8gSbjLN@103.172.85.130:49155"}
+            proxy = {'http':'http://toonrips:xipTsP9H9s@103.171.51.246:50100','http://toonrips:xipTsP9H9s@103.171.51.246:50100"}
       
             r = requests.get(url, headers=headersy,proxies=proxy)
             import logging
@@ -1018,7 +1043,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         import logging
         logging.info(contn)
         try:
-            app.send_message(7126874550,f"<code>{url}</code> and By user {user_id}")
+            app.send_message(1596559467,f"<code>{url}</code> and By user {user_id}")
         except Exception:
             pass
         kid = datasliv["kid"]
@@ -1219,7 +1244,7 @@ def download_button(_, callback_query):
             download_vod_ytdlp(url, message, ci,user_id=user_id) 
         return
     elif data == "selected":
-        callback_query.answer("Can't Select Again Try Reload # Created By Aryan Chaudhary")
+        callback_query.answer("Can't Select Again Try Reload # Created By Mahesh Kadali")
         return
     elif data == "reload":
  #       print(user_id)
@@ -1379,9 +1404,9 @@ def download_button(_, callback_query):
 def jiodl(client, message):
 
     user_id = message.from_user.id
-    print('[=>] OTT Downloader Starting Created By Aryan Chaudhary')
+    print('[=>] OTT Downloader Starting Created By Mahesh Kadali')
     import logging
-    logging.info('[=>] OTT Downloader Starting Created By Aryan Chaudhary')
+    logging.info('[=>] OTT Downloader Starting Created By Mahesh Kadali')
 
     # Fetch Guest token when Not using Account token
     if not config.get("authToken") and not config.get("useAccount"):
