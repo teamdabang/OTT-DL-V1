@@ -238,7 +238,7 @@ def decrypt_vod_mp4d(kid, key, input_path, output_path):
     # Create mp4decrypt command
     mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
     command = ["mp4decrypt", '--key', f"{kid}:{key}", input_path, output_path]
-    process = subprocess.run(command, shell=True)
+    process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
     return "Done"
     
 
