@@ -16,21 +16,7 @@ from yt_dlp.postprocessor import PostProcessor
 from utils import scriptsDir, joinPath, realPath
 from asyncio import create_subprocess_exec, create_subprocess_shell, run_coroutine_threadsafe, sleep
 #from button import ButtonMaker
-LOG_FILE = "lo                from tg import tgUploader
-                uploader = tgUploader(app, ms, ms.chat.id)
-                up = uploader.upload_file(file_path)
-            except Exception as e:
-                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
-            try:
-                #file_path = ydl.prepare_filename(content_info)
-                file_path = file_path[:-1][:-1][:-1][:-1]+".mkv"
-                from tg import tgUploader
-                uploader = tgUploader(app, ms, ms.chat.id)
-                up = uploader.upload_file(file_path)
-            except Exception as e:
-                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
-      except yt_dlp.utils.DownloadError as e:
-        print(f"[!] Error Downloading Content: {e}")g.txt"
+LOG_FILE = "log.txt"
 logging.basicConfig(
     format="[%(asctime)s] [%(levelname)s] - %(message)s",
     datefmt="%d-%b-%y %I:%M:%S %p",
