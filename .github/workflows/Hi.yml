@@ -12,6 +12,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . -t aryanchaudhary449/bot1:v2
+      run: docker build . -t tonystarkmahesh/ott
     - name: login
-      run: docker login -u aryanchaudhary449 -p Aaryanaryan && docker push aryanchaudhary449/bot1:v2
+      run: docker login -u tonystarkmahesh -p SNEHITHA@2008 && docker push tonystarkmahesh/ott
