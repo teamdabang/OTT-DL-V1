@@ -881,7 +881,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                       "Referer": "https://www.zee5.com/",
                       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
             }
-            proxy = {'http':'http://toonrips:xipTsP9H9s@103.171.51.246:50100','http://toonrips:xipTsP9H9s@103.171.51.246:50100'}
+            proxy = {'http':'http://toonrips:xipTsP9H9s@103.171.51.246:50100','https':"http://toonrips:xipTsP9H9s@103.171.51.246:50100"}
             r = requests.get(url, headers=headersy, proxies=proxy)
             import logging
             logging.info(r)
@@ -970,7 +970,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                       "Referer": "https://www.hotstar.com/",
                       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
             }
-            proxy = {'http':'http://toonrips:xipTsP9H9s@103.171.51.246:50100','http://toonrips:xipTsP9H9s@103.171.51.246:50100"}
+            proxy = {'http':'http://toonrips:xipTsP9H9s@103.171.51.246:50100','https':"http://toonrips:xipTsP9H9s@103.171.51.246:50100"}
       
             r = requests.get(url, headers=headersy,proxies=proxy)
             import logging
