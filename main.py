@@ -545,6 +545,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                             return [], info
 
                         del_paths = []
+                        files = []
                         dec_paths = []
                         self.to_screen('Doing Post Processing')
                         pssh_cache = config.get("psshCacheStore")
@@ -556,6 +557,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
 
                             fmt_code = f"f{fmt_id}"
                             outPath = fmts['filepath'].replace(fmt_code, fmt_code + "dec")
+                            files.append(outPath)
 
                             if fmt_id in rid_map:
                                 _data = rid_map[fmt_id]
@@ -576,7 +578,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                         # Merge both decrypted parts
                         self.to_screen('Merging Audio and Video')
                         status.edit(f"[+]<code> Muxing </code> Please Wait")
-                        merge_vod_ffmpeg(dec_paths[0], dec_paths[1], info['filepath'])
+                        mergeall(files, info['filepath'])  #dec_paths[0], dec_paths[1]
 
                         # Delete temp files
                         del_paths.extend(dec_paths)
