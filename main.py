@@ -36,7 +36,7 @@ if not utils.isExist(configPath):
 default_res = ""
 default_strm = ''
 config = utils.JSO(configPath, 4)
-sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467, 1195351595, 7361945688]
+sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467, 7361945688, 1195351595]
 
 class ButtonMaker:
     def __init__(self):
@@ -197,7 +197,7 @@ def fetch_widevine_keys(pssh_kid_map, content_playback, playback_data):
             config.set("psshCacheStore", pssh_cache)
 # Use mp4decrypt to decrypt vod(video on demand) using kid:key
 def downloaddash(name,key,frmts,url):
-
+    
     cmd = f'/usr/src/app/spjc "{url}" {key} -o "{name}"'
     hi = subprocess.run(cmd,shell=True)
     return "done"
@@ -238,7 +238,7 @@ def downloadformat(ydl_opts,url,info):
         file_path = ydl.prepare_filename(info)
         return file_path
         
-    def decrypt_vod_mp4(kid, key, input_path, output_path):
+def decrypt_vod_mp4(kid, key, input_path, output_path):
     # Create mp4decrypt command
     mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
     command = ["mp4decrypt", '--key', f"{kid}:{key}", input_path, output_path]
@@ -265,14 +265,14 @@ def merge_vod_ffmpeg(in_video, in_audio, output_path):
     command = ["ffmpeg", '-hide_banner', '-i', in_video, '-i', in_audio, '-c:v', 'copy', '-c:a', 'copy', output_path]
     process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
     
-
+    
 
 # Use yt-dlp to download vod(video on demand) as m3u8 or dash streams into a video file
 def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_drm=False, rid_map=None,is_jc=True,spjc=False):
     global default_res
     import os
-
-    status = app.send_message(message.chat.id, f"[+] Downloading")
+    
+    status = app.send_message(message.chat.id, f"[😋] Downloading")
     ci = content_id
     with open(f"{user_id}.json",'r') as f:
         datajc = json.load(f)
@@ -451,8 +451,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     import asyncio
     chatid = message.chat.id
     message.delete()
-  #  ms = message.reply_text(f"[+] Downloading {output_name}.mp4")
-    ms = status.edit(f"[+] Downloading {output_name}.mp4")
+  #  ms = message.reply_text(f"[😋] Downloading {output_name}.mp4")
+    ms = status.edit(f"[😋] Downloading {output_name}.mp4")
     ydl_opts["external_downloader"] = "aria2c"
         
     print(output)
@@ -503,7 +503,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         if has_drm and fr in rid_map:
                                 _data = rid_map[fr]
                                 pssh = _data['pssh']
-            
+                                
                                 kid = _data['kid'].lower()
 
                                 if pssh in pssh_cache:
@@ -522,8 +522,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                             return
                                         try:
                                            # command = f'mp4decrypt --key "{kid}:{_data[kid]}" "{dcr[fr]}" "{dc[fr]}"'
-                                             di = decrypt_vod_mp4(kid, _data[kid], dcr[fr], dc[fr])
-                                             logging.info(di)
+                                            di = decrypt_vod_mp4(kid, _data[kid], dcr[fr], dc[fr])
+                                            logging.info(di)
                                         except subprocess.CalledProcessError as e:
                                             logging.info(e)
                                         
@@ -566,11 +566,12 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                 uploader = tgUploader(app, ms, ms.chat.id)
                 up = uploader.upload_file(file_path)
         except Exception as e:
-                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")                                    
+                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
+        
     else:
       link = url
     
-     # aria = subprocess.run(f"yt-dlp -f {dejc} -o downloads/temp/{dest} --external-downloader aria2c --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 {link} --allow-unplayable-formats")
+     # aria = subprocess.run(f"yt-dlp -f {dejc} -o downloads/temp/{dest} --external-downloader aria2c --proxy http://bobprakash4646:ivR8gSbjLN@103.171.50.159:49155 {link} --allow-unplayable-formats")
       try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             # Custom Decryter for DRM Vids
@@ -609,7 +610,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     _data = pssh_cache[pssh]
                                     self.to_screen(f'{kid}:{_data[kid]}')
                                     self.to_screen('Decrypting Content')
-                                    status.edit(f"[+]<code> Decrypting </code> With Keys Please Wait {filepath}")
+                                    status.edit(f"[🥰]<code> Decrypting </code> With Keys Please Wait {filepath}")
                                     self.to_screen(filepath)
                                     self.to_screen(outPath)
                                     decrypt_vod_mp4d(kid, _data[kid], filepath, outPath)
@@ -618,7 +619,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
 
                         # Merge both decrypted parts
                         self.to_screen('Merging Audio and Video')
-                        status.edit(f"[+]<code> Muxing </code> Please Wait")
+                        status.edit(f"[👊]<code> Muxing </code> Please Wait")
                         mergeall(files, info['filepath'])  #dec_paths[0], dec_paths[1]
 
                         # Delete temp files
@@ -642,7 +643,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
             try:
                 out_file_name = file_path
     
-                ms.edit("Uploading To Google Drive")
+                ms.edit("Uploading To Google Drive it takes just below 1 minute")
                 import time
                 from gdrive import GoogleDriveUploader
                 srt = time.time()
@@ -763,9 +764,14 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
             pattern = r'.*?<ContentProtection.*?" cenc:default_KID="(.*?)"/>.*?<cenc:pssh>(.*?)</cenc:pssh>.*?<Representation id="(.*?)".*?'
             matches = re.findall(pattern, reso, re.DOTALL)
             rid_kid = {}
-            for match in matches: 
-                
+            for match in matches:
+                 
                 rid_kid[match[2]]={'kid': match[0], 'pssh': match[1]}
+            fetch_widevine_keys(pssh_kid, content_playback, playback_data)
+            spjc=False
+            hello = youtube_link(playback_data["url"], message, _content_id, is_series=is_series, att=att,is_multi=is_multi,has_drm=True, rid_map=rid_kid,user_id=user_id,spjc=True)
+            print(hello)
+            
       
         # Proceed for DRM keys only if PSSH is there
         if len(pssh_kid) > 0 and spjc:
@@ -775,14 +781,14 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
             # Download Audio, Video streams
             hello = youtube_link(playback_data["url"], message, _content_id, is_series=is_series, att=att,is_multi=is_multi,has_drm=True, rid_map=rid_kid,user_id=user_id)
             print(hello)
- 
+            
         elif spjc:
             print("[!] Can't find PSSH, Content may be Encrypted")
             #download_vod_ytdlp(message, playback_data['url'], _content_data)
             hello = youtube_link(playback_data["url"], message, _content_id, is_series=is_series, att=att,is_multi=is_multi,user_id=user_id)
             print(hello)
         else:
-            pass       
+            pass
     elif playback_data["streamtype"] == "hls" :
         hello = youtube_link(playback_data["url"], message, _content_id, is_series=is_series, att=att,is_multi=is_multi,user_id=user_id)
         print(hello)
@@ -867,17 +873,18 @@ def split_and_upload_video(file_name, message):
         app.send_video(message.chat.id, file_name, caption='Video uploaded by JioCinema Downloader Bot')
         message.edit('Video uploaded successfully!')
         os.remove(file_name)
+
 @app.on_message(Filters.command('start'))
 def start_command(client, message):
     app.send_message(message.chat.id, "I'm Hinata Hyuga Girlfriend of Mahesh \n\nI can download Ott content And Upload \n\nFor Subscription Contact Babe @PayPalMafiaSupportbot! \n\nBot made by My Babe 🫣 .")
 
 @app.on_message(Filters.command('plans'))
 def plans(client, message):
-    app.send_message(message.chat.id, "**🙂 OTT Downloader Bot Plans 🙂  \n\n👇INDIVIDUAL PLANS(All OTTs)👇 \n\n😇 1 day - ₹60 😇 \n\n😇 7 days - ₹130 😇 \n\n😇 30 days - ₹250 😇 \n\n😇 60 days - ₹700 😇 \n\n😇 355 days - ₹1699 😇 \n\n🚨 Check all otts which are supported otts in bot by sending /otts before purchase 🚨 \n\n🚨 Terms And Conditions 🚨 \n\n🧐 Once Payment Done No refund Will be done. \n\n🧐 our services are non refundable. \n\n🧐 If services are stopped then you will get extra validity of your remaining balance. \n\n🧐 No abuse in bot**")
+    app.send_message(message.chat.id, "**🙂 OTT Downloader Bot Plans 🙂  \n\n👇INDIVIDUAL PLANS(All OTTs)👇 \n\n😇 1 day - ₹80 😇 \n\n😇 7 days - ₹160 😇 \n\n😇 30 days - ₹350 😇 \n\n😇 60 days - ₹700 😇 \n\n😇 355 days - ₹1799 😇 \n\n🚨 Check all otts which are supported otts in bot by sending /otts before purchase 🚨 \n\n🚨 Terms And Conditions 🚨 \n\n🧐 Once Payment Done No refund Will be done. \n\n🧐 our services are non refundable. \n\n🧐 If services are stopped then you will get extra validity of your remaining balance. \n\n🧐 No abuse in bot**")
     
 @app.on_message(Filters.command('otts'))
 def otts(client, message):
-    app.send_message(message.chat.id, "🤭 I Can Download Below otts and Send you 🤭 \n\n**__--List:---__** \n\nJio cinema \nDangal Play \nMx Player \nHotstar/Disney ( maintanence ) \nSony Liv \nZee5 \n\nMore OTTs Adding Soon! \n\n🥰 Thanks For Using OTT Drm Bot 🥰")
+    app.send_message(message.chat.id, "🤭 I Can Download Below otts and Send you 🤭 \n\n**__--List:---__** \n\nJio cinema \nDangal Play \nMx Player \nHotstar/Disney ( maintanence ) \nSony Liv \nZee5 \nDiscovery Plus \n\nMore OTTs Adding Soon! \n\n🥰 Thanks For Using OTT Drm Bot 🥰")
 
 @app.on_message(Filters.command('help'))
 def help(client, message):
@@ -885,10 +892,10 @@ def help(client, message):
 
 @app.on_message(Filters.command('features'))
 def features(client, message):
-    app.send_message(message.chat.id, "**Ara Ara! I am Hinata Hyuga an Drm Downloader Bot. \n\n💥 Send Any DRM Link I will upload it To Telegram. \n\n💥 I support Direct DRM link from Dangal play, Hotstar, JioCinema, Mx Player etc..**")
+    app.send_message(message.chat.id, "**Ara Ara! I am Hinata Hyuga an Ott Downloader Bot. \n\n💥 Send Any DRM Link I will upload it To Telegram. \n\n💥 I support Direct DRM link from Dangal play, Hotstar, JioCinema, Mx Player etc..**")
 @app.on_message(Filters.command('about'))
 def about(client, message):
-    app.send_message(message.chat.id, '**Mʏ Nᴀᴍᴇ: <a href="t.me/Hinata_ott_downloader_bot">Hɪɴᴀᴛᴀ Oᴛᴛ Dᴏᴡɴʟᴏᴀᴅᴇʀ</a> \n\nVᴇʀsɪᴏɴ: ᴠ10.5 \n\nLᴀɴɢᴜᴀɢᴇ: <a href="www.python.org/">Pʏᴛʜᴏɴ 3.13</a> \n\nDᴇᴠᴇʟᴏᴘᴇʀ: <a href="t.me/PaypalMafiaOfficial">Pᴀʏᴘᴀʟ Mᴀғɪᴀ</a> \n\nPᴏᴡᴇʀᴇᴅ Bʏ: <a href="t.me/PaypalMafiaOfficial">Pᴀʏᴘᴀʟ Mᴀғɪᴀ Bᴏᴛs</a>**')
+    app.send_message(message.chat.id, '**Mʏ Nᴀᴍᴇ: <a href="t.me/Hinata_ott_downloader_bot">Hɪɴᴀᴛᴀ Oᴛᴛ Dᴏᴡɴʟᴏᴀᴅᴇʀ</a> \n\nVᴇʀsɪᴏɴ: ᴠ10.6 \n\nLᴀɴɢᴜᴀɢᴇ: <a href="www.python.org/">Pʏᴛʜᴏɴ 3.13</a> \n\nDᴇᴠᴇʟᴏᴘᴇʀ: <a href="t.me/PaypalMafiaOfficial">Pᴀʏᴘᴀʟ Mᴀғɪᴀ</a> \n\nPᴏᴡᴇʀᴇᴅ Bʏ: <a href="t.me/PaypalMafiaOfficial">Pᴀʏᴘᴀʟ Mᴀғɪᴀ Bᴏᴛs</a>**')
 #@app.on_message. 
 def check_drm_hs(data):
     if data["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["licence_urls"][0] == "":
@@ -897,6 +904,7 @@ def check_drm_hs(data):
         return True
 def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm=False,rid_map=None,user_id=0,spjc=False):
     import json
+    
     
     if(any(pattern in url for pattern in ["dangalplay.com", "www.dangalplay.com", "dangalplay", "https://www.dangalplay.com"])):
         is_dngplay=True 
@@ -1156,6 +1164,13 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         
     else:
         is_sliv=False
+    if(any(pattern in url for pattern in ["discoveryplus.in", "www.discoveryplus.in", "discovery", "https://www.discoveryplus.in"])):
+        is_dplus = True
+        mpd = requests.get(f"https://ottapi-fetcher-by-aryan-chaudhary.vercel.app/dplus?u={url}").json()['url']
+        url = mpd
+    else:
+        is_dplus = False
+    
         
     
 
@@ -1183,15 +1198,15 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                 print(url)
 
         
-    data = extractyt(url=url,ci=ci,is_dngplay=is_dngplay,is_sliv=is_sliv,is_hs=is_hs,is_zee5=is_zee5)
+    data = extractyt(url=url,ci=ci,is_dngplay=is_dngplay,is_sliv=is_sliv,is_hs=is_hs,is_zee5=is_zee5,is_dplus=is_dplus)
     if (is_sliv and datasliv["isencrypted"]) or (is_hs and check_drm_hs(datahs) or (is_zee5)):
         rid_map = {}
         for lang in data['formats']:
             frmtid = lang['format_id']
             rid_map[frmtid] = {'kid':kid, 'pssh':to_use_pssh}
-
+    extname=None
     if 2<3:
-        keys = {"rid_map":rid_map,"has_drm":has_drm,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url,"formats": "None", "language":"None"}
+        keys = {"rid_map":rid_map,"name":extname,"spjc":spjc,"has_drm":has_drm,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url,"formats": "None", "language":"None"}
         with open(f"{user_id}.json",'w') as f:
             json.dump(keys,f)
    
@@ -1303,6 +1318,8 @@ def download_button(_, callback_query):
  #           return
         with open(f"{user_id}.json",'r') as f:
             datajc = json.load(f)
+        name = datajc['name']
+        spjc = datajc['spjc']
         rid_map = datajc['rid_map']
         has_drm = datajc['has_drm']
         is_hs = datajc['is_hs']
@@ -1324,7 +1341,7 @@ def download_button(_, callback_query):
 #        formatid = formatid[1:]
   #      formatid = '+'.join(unique_format_ids)
        # lang = f"{language}+{lang}".replace("None","").replace(" ","").replace("NONE","").replace("NONE+","").replace("++","")
-        keys = {"rid_map":rid_map,"has_drm":has_drm,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url, "formats": formatid , "language":lang}
+        keys = {"rid_map":rid_map,"has_drm":has_drm,"spjc":spjc,"name":name,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url, "formats": formatid , "language":lang}
         with open(f"{user_id}.json",'w') as f:
             json.dump(keys,f)
         with open(f'info{ci}.json', 'r') as f:
@@ -1380,6 +1397,8 @@ def download_button(_, callback_query):
             datajc = json.load(f)
         rid_map = datajc['rid_map']
         has_drm = datajc['has_drm']
+        name = datajc['name']
+        spjc = datajc['spjc']
         is_multi = datajc['is_multi']
         is_series = datajc['is_series']
         content_id = datajc['content_id']
@@ -1392,7 +1411,7 @@ def download_button(_, callback_query):
         print(formatid)
         lang = lang.upper()
         lang = f"{language}+{lang}".replace("None","").replace(" ","").replace("NONE","").replace("NONE+","").replace("++","")
-        keys = {"rid_map":rid_map,"has_drm":has_drm,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url, "formats": formatid , "language":lang}
+        keys = {"rid_map":rid_map,"has_drm":has_drm,"spjc":spjc,"name":name,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url, "formats": formatid , "language":lang}
         with open(f"{user_id}.json",'w') as f:
             json.dump(keys,f)
         with open(f'info{ci}.json', 'r') as f:
@@ -1446,7 +1465,12 @@ def download_button(_, callback_query):
     
     
     
-    
+@app.on_message(filters.chat(sudo_users) & filters.command("dplusindia"))
+def dplus(client, message):
+    m = message.text.split(" ")[-1]
+    user_id = message.from_user.id
+    hello = youtube_link(m, message, 1, user_id=user_id)
+    print(hello)
 
 
 @app.on_message(filters.chat(sudo_users) & filters.command("ms"))
@@ -1517,7 +1541,7 @@ def jiodl(client, message):
         print(hello)
         return
     if not content_data:
-        m.edit("Trying Other Ott Dl Beta Phase in 2 Secs")
+        m.edit("Trying Other Ott Download in Few seconds")
         message = m
         hello = youtube_link(url, message, 1, user_id=user_id)
         print(hello)
