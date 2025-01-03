@@ -196,6 +196,11 @@ def fetch_widevine_keys(pssh_kid_map, content_playback, playback_data):
             pssh_cache[pssh] = requests.get(url='https://hls-proxifier-sage.vercel.app/jc',headers={"pyid":content_playback["playbackId"],"url":playback_data["licenseurl"],"pssh":pssh}).json()["keys"]
             config.set("psshCacheStore", pssh_cache)
 # Use mp4decrypt to decrypt vod(video on demand) using kid:key
+def downloaddash(name,key,frmts,url):
+
+    cmd = f'/usr/src/app/spjc "{url}" {key} -o "{name}"'
+    hi = subprocess.run(cmd,shell=True)
+    return "done"
 def detector(ci,fr):
     with open(f"info{ci}.json","r") as file:
         
@@ -233,7 +238,16 @@ def downloadformat(ydl_opts,url,info):
         file_path = ydl.prepare_filename(info)
         return file_path
         
-    
+    def decrypt_vod_mp4(kid, key, input_path, output_path):
+    # Create mp4decrypt command
+    mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
+    command = ["mp4decrypt", '--key', f"{kid}:{key}", input_path, output_path]
+    process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
+    try:
+        process.wait()
+    except Exception:
+        pass
+    return "Done"
         
 def decrypt_vod_mp4d(kid, key, input_path, output_path):
     # Create mp4decrypt command
@@ -254,9 +268,10 @@ def merge_vod_ffmpeg(in_video, in_audio, output_path):
 
 
 # Use yt-dlp to download vod(video on demand) as m3u8 or dash streams into a video file
-def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_drm=False, rid_map=None,is_jc=True):
+def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_drm=False, rid_map=None,is_jc=True,spjc=False):
     global default_res
     import os
+
     status = app.send_message(message.chat.id, f"[+] Downloading")
     ci = content_id
     with open(f"{user_id}.json",'r') as f:
@@ -264,6 +279,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     rid_map = datajc['rid_map']
     has_drm = datajc['has_drm']
     is_hs = datajc['is_hs']
+    name = datajc['name']
+    spjc = datajc['spjc']
     license_url = datajc['license_url']
     is_multi = datajc['is_multi']
     is_series = datajc['is_series']
@@ -399,6 +416,11 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         if is_jc:
             output_name = f'{content["fullTitle"]}-({content["releaseYear"]})'
             print("is_jc")
+        if(any(pattern in url for pattern in ["dplus"])):
+            is_dplus = True
+            ydl_opts['proxy'] = ""
+        else:
+            is_dplus = False
         print(f"[=>] Downloading ")
     
     
@@ -438,6 +460,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     ydl_opts['outtmpl'] = output_name
     frmts = formats.split("+")
+    frt = frmts[0]
     dcr = {}
     import logging
     if is_hs:
@@ -480,6 +503,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         if has_drm and fr in rid_map:
                                 _data = rid_map[fr]
                                 pssh = _data['pssh']
+            
                                 kid = _data['kid'].lower()
 
                                 if pssh in pssh_cache:
@@ -498,8 +522,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                             return
                                         try:
                                            # command = f'mp4decrypt --key "{kid}:{_data[kid]}" "{dcr[fr]}" "{dc[fr]}"'
-                                            command = ['mp4decrypt', '--key', f"{kid}:{_data[kid]}", dcr[fr], dc[fr]]
-                                            process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
+                                             di = decrypt_vod_mp4(kid, _data[kid], dcr[fr], dc[fr])
+                                             logging.info(di)
                                         except subprocess.CalledProcessError as e:
                                             logging.info(e)
                                         
@@ -524,9 +548,25 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                 up = uploader.upload_file(file_path)
       except Exception as e:
                 print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
-            
-      
-                                    
+    elif spjc:
+        keyt = ""
+        if has_drm and frt in rid_map:
+                                _data = rid_map[frt]
+                                pssh = _data['pssh']
+                                pssh_cache = config.get("psshCacheStore")
+                                if pssh in pssh_cache:
+                                    _data = pssh_cache[pssh]
+        for f,g in _data.items():
+            keyt = keyt + f'--key "{f}:{g}" '
+        ch = downloaddash(ffout,keyt,frmts,url)
+        print(ch)
+        file_path = ffout
+        try:
+                from tg import tgUploader
+                uploader = tgUploader(app, ms, ms.chat.id)
+                up = uploader.upload_file(file_path)
+        except Exception as e:
+                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")                                    
     else:
       link = url
     
@@ -710,6 +750,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
         print(pssh_kid)
         print(rid_kid)
         if len(pssh_kid) > 0:
+            spjc=True
             pass
         else:
             
@@ -722,23 +763,26 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
             pattern = r'.*?<ContentProtection.*?" cenc:default_KID="(.*?)"/>.*?<cenc:pssh>(.*?)</cenc:pssh>.*?<Representation id="(.*?)".*?'
             matches = re.findall(pattern, reso, re.DOTALL)
             rid_kid = {}
-            for match in matches:
-                pssh_kid 
+            for match in matches: 
+                
                 rid_kid[match[2]]={'kid': match[0], 'pssh': match[1]}
       
         # Proceed for DRM keys only if PSSH is there
-        if len(pssh_kid) > 0:
+        if len(pssh_kid) > 0 and spjc:
             # Get the Decryption Keys into cache
             fetch_widevine_keys(pssh_kid, content_playback, playback_data)
 
             # Download Audio, Video streams
             hello = youtube_link(playback_data["url"], message, _content_id, is_series=is_series, att=att,is_multi=is_multi,has_drm=True, rid_map=rid_kid,user_id=user_id)
             print(hello)
-        else:
+ 
+        elif spjc:
             print("[!] Can't find PSSH, Content may be Encrypted")
             #download_vod_ytdlp(message, playback_data['url'], _content_data)
             hello = youtube_link(playback_data["url"], message, _content_id, is_series=is_series, att=att,is_multi=is_multi,user_id=user_id)
             print(hello)
+        else:
+            pass       
     elif playback_data["streamtype"] == "hls" :
         hello = youtube_link(playback_data["url"], message, _content_id, is_series=is_series, att=att,is_multi=is_multi,user_id=user_id)
         print(hello)
