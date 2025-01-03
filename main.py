@@ -101,7 +101,7 @@ class ButtonMaker:
         return InlineKeyboardMarkup(menu)
 
 
-def extractyt(url=None,ci=None,is_dngplay=False,is_sliv=False,is_hs=False,is_zee5=False):
+def extractyt(url=None,ci=None,is_dngplay=False,is_sliv=False,is_hs=False,is_zee5=False,is_dplus=False):
     try:
         os.remove(f"info{ci}.json")
     except Exception:
