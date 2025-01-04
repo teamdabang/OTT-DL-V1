@@ -14,7 +14,7 @@ LOG_MESSAGE = "<code>[🙄]</code> <b>{}</b>\n<b><code>[+]</code> <b>{} : </b><c
 
 class GDRIVE_CONFIG:
     #for Gdrive (Leave it as Empty String if not Gdrive Upload is turned ON)
-    root_folder_id = "1dkH1j4naVN0eem7kOSS8sTB3gt4cSdKQ"
+    root_folder_id = "0AKTL6HX5HeINUk9PVA"
 
     #keep it empty if you don't have index link or don't touch
     indexlink_format = ""
