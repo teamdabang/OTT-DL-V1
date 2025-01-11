@@ -384,9 +384,9 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         output_name = f'E{content["episode"]}-{content["fullTitle"]}'
         
     else:
-        output_name = "OTT-DL-(BETA)"
+        output_name = "OTT-DL"
         if is_hs:
-            output_name = "Hotstar.WebDl"
+            output_name = "Hotstar"
        #     ydl_opts['proxy'] = ""
          #   print("proxy Removed")
             
@@ -395,7 +395,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
            # token = requests.get("https://ccroute.vercel.app/sliv").json()["token"]
            # ydl_opts['username']='token'
           #  ydl_opts['password']= token
-            output_name = "SonyLivDl.Beta.Phase"
+            output_name = "SonyLiv"
             head = {
                       "x-playback-session-id": "47c6938a7c5c4bd48d503e330c9e6512-1735474637849"
                 }
@@ -435,7 +435,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         pass
     output_name += f'.{language}'
     output_name += '.WEB-DL-JC'
-    output_name += ".@maheshsirop"
+    output_name += ".@PayPalMafiaOfficial"
     
 
     # Audio Codec
@@ -1561,7 +1561,7 @@ def jiodl(client, message):
     if content_data['isPremium'] or 2<3 :
         Token = requests.get("https://hls-proxifier-sage.vercel.app/jiotoken").json()['token']
         config.set("authToken", Token)
-        m.edit("[+] Need Premium Account for this Content Or Fetching Token")
+        m.edit("[🦚] Need Premium Account for this Content Or Fetching Token")
      #   exit(0)
 
     # Show and Series links are complicated
