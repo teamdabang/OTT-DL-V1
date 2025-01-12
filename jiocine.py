@@ -471,7 +471,7 @@ def getWidevineLicense(license_url, challenge, token, playback_id=None, headers=
 
   except Exception as e:  # Catch other potential errors
       logging.error(f"Unexpected error: {e}")
-      return None
+       return None
 
 
 
