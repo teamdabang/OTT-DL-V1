@@ -281,37 +281,31 @@ def fetchPlaybackDataold(content_id, token):
 
   # Ensure requests is imported
 
-def getMPDData(mpd_url: str, is_hs: bool = False, session: requests.Session = None, proxy: dict = None) -> dict:
-    if session is None:
-        session = requests.Session()  # Create a new session if none is provided
-
+def getMPDData(mpd_url,is_hs=False):
     headerhs = {
-        "Origin": "https://www.hotstar.com",
-        "Referer": "https://www.hotstar.com/",
-        "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+    "Origin": "https://www.hotstar.com",
+    "Referer": "https://www.hotstar.com/",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
     }
     headerjcs = {
-        "Origin": "https://www.jiocinema.com",
-        "Referer": "https://www.jiocinema.com/",
-        "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+    "Origin": "https://www.jiocinema.com",
+    "Referer": "https://www.jiocinema.com/",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
     }
-
-    headers = headerhs if is_hs else headerjcs
+    if is_hs:
+        r = session.get(mpd_url, headers=headerhs, proxies=proxy)
+    else:
+        r = session.get(mpd_url, headers=headers, proxies=proxy)
+    if r.status_code != 200:
+        return None
 
     try:
-        r = session.get(mpd_url, headers=headers, proxies=proxy)
-        r.raise_for_status()  # Raise an error for bad responses
+        import logging
         logging.info(r.content)
-        return xmltodict.parse(r.content)
-    except requests.RequestException as e:
-        logging.error(f"[!] Request failed: {e}")
-        return None
+        return xmltodict.parse(r.content), r.text
     except Exception as e:
-        logging.error(f"[!] getMPDData: {e}")
+        print(f"[!] getMPDData: {e}")
         return None
-
-# Fetch Video URl details using Token
-
 
 def parseMPDData(mpd_per):
     # Extract PSSH and KID
