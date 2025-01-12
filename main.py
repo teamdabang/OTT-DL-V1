@@ -738,6 +738,10 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
         print(f'[=>] Getting MPD manifest data')
 
         mpd_data = jiocine.getMPDData(playback_data["url"])
+        try:
+            reso = mpd_data.decode('utf-8')
+        except Exception:
+            pass
         if not mpd_data:
             print("[!] Failed to get MPD manifest")
             exit(0)
