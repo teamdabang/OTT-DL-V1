@@ -310,45 +310,45 @@ def getMPDData(mpd_url,is_hs=False):
 
 
 # Parse MPD data for PSSH maps
-def parseMPDData(mpd_per):
-    # Extract PSSH and KID
+
+
+
+def parse_mpd_data(mpd_per):
+
     rid_kid = {}
     pssh_kid = {}
     import logging
-    logging.info("pase mpd data")
+    logging.info("Parsing MPD data")
 
-    # Store KID to corresponding Widevine PSSH and Representation ID
-    def readContentProt(rid, cp):
+    def read_content_prot(rid, cp):
+
         _pssh = None
-        if cp[1]["@schemeIdUri"].lower() == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed":
-            logging.info("found pssh")
-            _pssh = cp[1]["cenc:pssh"]
+        for c in cp:
+            if c["@schemeIdUri"].lower() == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed":
+                logging.info("Found PSSH")
+                _pssh = c["cenc:pssh"]
+                break  # Exit the loop after finding the PSSH
 
         if _pssh:
             if _pssh not in pssh_kid:
                 pssh_kid[_pssh] = set()
 
-            if cp[0]['@value'].lower() == "cenc":
-                _kid = cp[0]["@cenc:default_KID"].replace("-", "")  # Cleanup
-                logging.info("found kid")
+            for c in cp:
+                if c[0]['@value'].lower() == "cenc":
+                    _kid = c[0]["@cenc:default_KID"].replace("-", "")
+                    logging.info("Found KID: %s", _kid)
 
-                rid_kid[rid] = {
-                    "kid": _kid,
-                    "pssh": _pssh
-                }
-                if _kid not in pssh_kid[_pssh]:
+                    rid_kid[rid] = {
+                        "kid": _kid,
+                        "pssh": _pssh
+                    }
                     pssh_kid[_pssh].add(_kid)
+                    break  # Exit the loop after finding the KID
 
-    # Search PSSH and KID
-    for ad_set in mpd_per['AdaptationSet']:
-        resp = ad_set['Representation']
-        if isinstance(resp, list):
-            for res in resp:
-                if 'ContentProtection' in res:
-                    readContentProt(res['@id'], res['ContentProtection'])
-        else:
-            if 'ContentProtection' in resp:
-                readContentProt(resp['@id'], resp['ContentProtection'])
+    for ad_set in mpd_per.get('AdaptationSet', []):
+        for representation in ad_set.get('Representation', []):
+            if 'ContentProtection' in representation:
+                read_content_prot(representation['@id'], representation['ContentProtection'])
 
     return rid_kid, pssh_kid
 
