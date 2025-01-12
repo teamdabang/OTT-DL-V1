@@ -10,7 +10,7 @@ if ospath.exists('log.txt'):
 
 if ospath.exists('rlog.txt'):
     remove('rlog.txt')
-UPSTREAM_REPO="https://aryanchy451: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@github.com/aryanchy451/Ott-Downloader-By-Aryan-Chaudhary"
+UPSTREAM_REPO="https://TONY-STARK-MAHESH:@github.com/TONY-STARK-MAHESH/Test"
 UPSTREAM_BRANCH="main"
 if UPSTREAM_REPO is not None:
     if ospath.exists('.git'):
@@ -18,7 +18,7 @@ if UPSTREAM_REPO is not None:
 
     update = srun([f"git init -q \
                      && git config --global user.email kipsas449@gmail.com \
-                     && git config --global user.name Aryan \
+                     && git config --global user.name Mahesh \
                      && git add . \
                      && git commit -sm update -q \
                      && git remote add origin {UPSTREAM_REPO} \
