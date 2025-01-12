@@ -86,6 +86,48 @@ AUDIO_CODECS = {
 
 # Initialize session and # Define your proxy if needed
 
+
+# Request guest token from JioCine Server
+def fetchGuestToken():
+    # URL to Guest Token Server
+    guestTokenUrl = "https://auth-jiocinema.voot.com/tokenservice/apis/v4/guest"
+
+    guestData = {
+        "appName": "RJIL_JioCinema",
+        "deviceType": "fireTV",
+        "os": "android",
+        "deviceId": "1464251119",
+        "freshLaunch": False,
+        "adId": "1464251119",
+        "appVersion": "4.1.3"
+    }
+
+    r = session.post(guestTokenUrl, json=guestData, headers=headers, proxies=proxy)
+    if r.status_code != 200:
+        return None
+
+    result = r.json()
+    if not result['authToken']:
+        return None
+
+    return result['authToken']
+
+
+# Fetch Content Details from Server
+def getContentDetails(content_id):
+    assetQueryUrl = "https://content-jiovoot.voot.com/psapi/voot/v1/voot-web//content/query/asset-details?" + \
+                    f"&ids=include:{content_id}&responseType=common&devicePlatformType=desktop"
+
+    r = session.get(assetQueryUrl, headers=headers, proxies=proxy)
+    if r.status_code != 200:
+        return None
+
+    result = r.json()
+    if not result['result'] or len(result['result']) < 1:
+        return None
+
+    return result['result'][0]
+
 # Fetch Video URL details using Token
 def fetch_playback_data(content_id: str, token: str) -> dict:
     playback_url = f"https://apis-jiovoot.voot.com/playback/v1/{content_id}"
