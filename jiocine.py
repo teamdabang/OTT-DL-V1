@@ -3,10 +3,9 @@ import xmltodict
 import logging 
 logging.basicConfig(level=logging.INFO)
 
-#Jio Cinema Downloader Bot Created By Aryan Chaudhary
 # Request object with Session maintained
 session = requests.Session()
-#session.proxies.update({'http': "http://toonrips:xipTsP9H9s@103.171.51.246:50100"})
+#session.proxies.update({'http': "http://bobprakash4646:ivR8gSbjLN@103.172.85.130:49155"})
 session.proxies.update({'http': "http://toonrips:xipTsP9H9s@103.171.51.246:50100"})
 proxy = {'http':'http://toonrips:xipTsP9H9s@103.171.51.246:50100','https':"http://toonrips:xipTsP9H9s@103.171.51.246:50100"}
 # Common Headers for Session
@@ -85,8 +84,6 @@ AUDIO_CODECS = {
     "theora": "THEORA",
 }
 
-# Initialize session and # Define your proxy if needed
-
 
 # Request guest token from JioCine Server
 def fetchGuestToken():
@@ -129,11 +126,13 @@ def getContentDetails(content_id):
 
     return result['result'][0]
 
-# Fetch Video URL details using Token
-def fetch_playback_data(content_id: str, token: str) -> dict:
-    playback_url = f"https://apis-jiovoot.voot.com/playback/v1/{content_id}"
+
+# Fetch Video URl details using Token
+def fetchPlaybackData(content_id, token):
+    playbackUrl = f"https://apis-jiovoot.voot.com/playback/v1/{content_id}"
+
     
-    play_data = {
+    playData = {
         "4k": True,
         "ageGroup": "18+",
         "appVersion": "3.4.0",
@@ -165,10 +164,9 @@ def fetch_playback_data(content_id: str, token: str) -> dict:
         "x-apisignatures": "o668nxgzwff",
         "deviceRange": "",
         "networkType": "4g",
-        "deviceMemory": 4096
+        "deviceMemory": 4096  # Web: o668nxgzwff, FTV: 38bb740b55f, JIOSTB: e882582cc55, ATV: d0287ab96d76
     }
-    
-    play_headers = {
+    playHeaders = {
         "authority": "apis-jiovoot.voot.com",
         "accesstoken": token,
         "x-platform": "androidweb",
@@ -184,50 +182,103 @@ def fetch_playback_data(content_id: str, token: str) -> dict:
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "cross-site"
     }
-    
-    play_headers.update(headers)
+    playHeaders.update(headers)
 
-    try:
-        response = session.post(playback_url, json=play_data, headers=play_headers, proxies=proxy)
-        response.raise_for_status()  # Raise an error for bad responses
-        result = response.json()
-        
-        if not result.get('data'):
-            logging.error("No playback data found in the response.")
-            return None
-        
-        return result['data']
-    
-    except requests.RequestException as e:
-        logging.error(f"Error fetching playback data: {e}")
+    r = session.post(playbackUrl, json=playData, headers=playHeaders, proxies = proxy)
+    if r.status_code != 200:
         return None
+        print("problem in playback")
+
+    result = r.json()
+    if not result['data']:
+        return None
+
+    return result['data']
+    
 
 
 # Fetch Series Episode List from Server
-def get_series_episodes(content_id: str) -> list:
-    episode_query_url = f"https://content-jiovoot.voot.com/psapi/voot/v1/voot-web//content/generic/series-wise-episode?sort=episode:asc&id={content_id}"
+def getSeriesEpisodes(content_id):
+    episodeQueryUrl = "https://content-jiovoot.voot.com/psapi/voot/v1/voot-web//content/generic/series-wise-episode?" + \
+                    f"sort=episode:asc&id={content_id}"
 
-    try:
-        response = session.get(episode_query_url, headers=headers, proxies=proxy)
-        response.raise_for_status()  # Raise an error for bad responses
-        result = response.json()
-        
-        if not result.get('result') or len(result['result']) < 1:
-            logging.error("No episodes found in the response.")
-            return None
-        
-        return result['result']
-    
-    except requests.RequestException as e:
-        logging.error(f"Error fetching series episodes: {e}")
+    r = session.get(episodeQueryUrl, headers=headers, proxies=proxy)
+    if r.status_code != 200:
         return None
 
-#import logging
-#import xmltodict
-# Assuming you are using requests for session and proxy
+    result = r.json()
+    if not result['result'] or len(result['result']) < 1:
+        return None
 
-# Initialize logging
+    return result['result']
 
+
+
+def fetchPlaybackDataold(content_id, token):
+    playbackUrl = f"https://apis-jiovoot.voot.com/playbackjv/v5/{content_id}"
+
+    playData = {
+        "4k": True,
+        "ageGroup": "18+",
+        "appVersion": "3.4.0",
+        "bitrateProfile": "xxhdpi",
+        "capability": {
+            "drmCapability": {
+                "aesSupport": "yes",
+                "fairPlayDrmSupport": "none",
+                "playreadyDrmSupport": "yes",
+                "widevineDRMSupport": "yes"
+            },
+            "frameRateCapability": [
+                {
+                    "frameRateSupport": "50fps",
+                    "videoQuality": "2160p"
+                }
+            ]
+        },
+        "continueWatchingRequired": False,
+        "dolby": True,
+        "downloadRequest": False,
+        "hevc": True,
+        "kidsSafe": False,
+        "manufacturer": "Android",
+        "model": "Android",
+        "multiAudioRequired": True,
+        "osVersion": "10",
+        "parentalPinValid": False,
+        "x-apisignatures": "o668nxgzwff",
+        "deviceRange": "",
+        "networkType": "4g",
+        "deviceMemory": 4096  # Web: o668nxgzwff, FTV: 38bb740b55f, JIOSTB: e882582cc55, ATV: d0287ab96d76
+    }
+    playHeaders = {
+        "authority": "apis-jiovoot.voot.com",
+        "accesstoken": token,
+        "x-platform": "androidweb",
+        "x-platform-token": "web",
+        "appname": "RJIL_JioCinema",
+        "jc-user-agent": "JioCinema/2411044 (web; mweb/10; tablet; Chrome Android)",
+        "uniqueid": "0a97cbb8e9a871ba2ae6fde431e24efe",
+        "x-apisignatures": "o668nxgzwff",
+        "versioncode": "2411044",
+        "sec-ch-ua": "\"Not-A.Brand\";v=\"99\", \"Chromium\";v=\"124\"",
+        "sec-ch-ua-platform": "\"Android\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "cross-site"
+    }
+    playHeaders.update(headers)
+
+    r = session.post(playbackUrl, json=playData, headers=playHeaders, proxies = proxy)
+    if r.status_code != 200:
+        return None
+        print("problem in playback")
+
+    result = r.json()
+    if not result['data']:
+        return None
+
+    return result['data']
 
 # Fetch Video URL details using Token
 def getMPDData(mpd_url, is_hs=False):
@@ -323,15 +374,4 @@ def getWidevineLicense(license_url, challenge, token, playback_id=None):
     logging.info("License fetched successfully.")
     return r.content
 
-
-# Jio Cinema Downloader Bot Created By Aryan Chaudhary
-
-
-
-
-# Jio Cinema Downloader Bot Created By Aryan Chaudhary
-
-
-
-
-
+# Jio Cinema Downloader Bot Created By Aryan chaudhary
