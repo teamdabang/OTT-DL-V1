@@ -282,103 +282,49 @@ def fetchPlaybackDataold(content_id, token):
 
 # Fetch Video URl details using Token
 
-def getMPDData(mpd_url,is_hs=False):
-    headerhs = {
-    "Origin": "https://www.hotstar.com",
-    "Referer": "https://www.hotstar.com/",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
-    }
-    headerjcs = {
-    "Origin": "https://www.jiocinema.com",
-    "Referer": "https://www.jiocinema.com/",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
-    }
-    if is_hs:
-        r = session.get(mpd_url, headers=headerhs, proxies=proxy)
-    else:
-        r = session.get(mpd_url, headers=headers, proxies=proxy)
-    if r.status_code != 200:
-        return None
 
-    try:
-        import logging
-        logging.info(r.content)
-        return xmltodict.parse(r.content), r.text
-    except Exception as e:
-        print(f"[!] getMPDData: {e}")
-        return None
-
-
-# Parse MPD data for PSSH maps
 def parseMPDData(mpd_per):
     # Extract PSSH and KID
     rid_kid = {}
     pssh_kid = {}
     import logging
-    logging.info("pase mpd data")
+    logging.info("parse mpd data")
 
     # Store KID to corresponding Widevine PSSH and Representation ID
     def readContentProt(rid, cp):
         _pssh = None
-        if cp[1]["@schemeIdUri"].lower() == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed":
+        if isinstance(cp, list) and len(cp) > 1 and cp[1].get("@schemeIdUri", "").lower() == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed":
             logging.info("found pssh")
-            _pssh = cp[1]["cenc:pssh"]
+            _pssh = cp[1].get("cenc:pssh")
 
         if _pssh:
             if _pssh not in pssh_kid:
                 pssh_kid[_pssh] = set()
 
-            if cp[0]['@value'].lower() == "cenc":
-                _kid = cp[0]["@cenc:default_KID"].replace("-", "")  # Cleanup
-                logging.info("found kid")
-
-                rid_kid[rid] = {
-                    "kid": _kid,
-                    "pssh": _pssh
-                }
-                if _kid not in pssh_kid[_pssh]:
+            if isinstance(cp, list) and len(cp) > 0 and cp[0].get('@value', '').lower() == "cenc":
+                _kid = cp[0].get("@cenc:default_KID", "").replace("-", "")  # Cleanup
+                if _kid:  # Ensure _kid is not empty
+                    logging.info("found kid")
+                    rid_kid[rid] = {
+                        "kid": _kid,
+                        "pssh": _pssh
+                    }
                     pssh_kid[_pssh].add(_kid)
 
     # Search PSSH and KID
-    for ad_set in mpd_per['AdaptationSet']:
-        resp = ad_set['Representation']
-        if isinstance(resp, list):
-            for res in resp:
-                if 'ContentProtection' in res:
-                    readContentProt(res['@id'], res['ContentProtection'])
-        else:
-            if 'ContentProtection' in resp:
-                readContentProt(resp['@id'], resp['ContentProtection'])
+    if 'AdaptationSet' in mpd_per:
+        for ad_set in mpd_per['AdaptationSet']:
+            resp = ad_set.get('Representation', None)
+            if resp is not None:
+                if isinstance(resp, list):
+                    for res in resp:
+                        if 'ContentProtection' in res:
+                            readContentProt(res.get('@id', ''), res['ContentProtection'])
+                else:
+                    if 'ContentProtection' in resp:
+                        readContentProt(resp.get('@id', ''), resp['ContentProtection'])
 
     return rid_kid, pssh_kid
-
-
-# Perform Handshake with Widevine Server for License
-def getWidevineLicense(license_url, challenge, token, playback_id=None):
-    # Just in case :)
-    if not playback_id:
-        playback_id = "27349583-b5c0-471b-a95b-1e1010a901cb"
-
-    drmHeaders = {
-        "authority": "key-jio.voot.com",
-        "accesstoken": token,
-        "appname": "RJIL_JioCinema",
-        "devicetype": "androidstb",
-        "os": "android",
-        "uniqueid": "1957805b-8c2a-4110-a5d9-767da377ffce",
-        "x-platform": "fireOS",
-        "x-feature-code": "ytvjywxwkn",
-        "x-playbackid": playback_id
-    }
-    drmHeaders.update(headers)
-
-    r = session.post(license_url, data=challenge, headers=drmHeaders, proxies=proxy)
-    if r.status_code != 200:
-        print(f"[!] Error: {r.content}")
-        return None
-
-    return r.content
-
 
 
 #Jio Cinema Downloader Bot Created By Aryan Chaudhary
