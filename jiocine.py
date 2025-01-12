@@ -278,7 +278,36 @@ def fetchPlaybackDataold(content_id, token):
 
     return result['data']
 
+  # Ensure requests is imported
 
+def getMPDData(mpd_url: str, is_hs: bool = False, session: requests.Session = None, proxy: dict = None) -> dict:
+    if session is None:
+        session = requests.Session()  # Create a new session if none is provided
+
+    headerhs = {
+        "Origin": "https://www.hotstar.com",
+        "Referer": "https://www.hotstar.com/",
+        "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+    }
+    headerjcs = {
+        "Origin": "https://www.jiocinema.com",
+        "Referer": "https://www.jiocinema.com/",
+        "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+    }
+
+    headers = headerhs if is_hs else headerjcs
+
+    try:
+        r = session.get(mpd_url, headers=headers, proxies=proxy)
+        r.raise_for_status()  # Raise an error for bad responses
+        logging.info(r.content)
+        return xmltodict.parse(r.content)
+    except requests.RequestException as e:
+        logging.error(f"[!] Request failed: {e}")
+        return None
+    except Exception as e:
+        logging.error(f"[!] getMPDData: {e}")
+        return None
 
 # Fetch Video URl details using Token
 
