@@ -1,12 +1,9 @@
 import requests
 import xmltodict
-import logging 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-
+#Jio Cinema Downloader Bot Created By Aryan Chaudhary
 # Request object with Session maintained
 session = requests.Session()
-#session.proxies.update({'http': "http://bobprakash4646:ivR8gSbjLN@103.172.85.130:49155"})
+#session.proxies.update({'http': "http://toonrips:xipTsP9H9s@103.171.51.246:50100"})
 session.proxies.update({'http': "http://toonrips:xipTsP9H9s@103.171.51.246:50100"})
 proxy = {'http':'http://toonrips:xipTsP9H9s@103.171.51.246:50100','https':"http://toonrips:xipTsP9H9s@103.171.51.246:50100"}
 # Common Headers for Session
@@ -282,77 +279,83 @@ def fetchPlaybackDataold(content_id, token):
     return result['data']
 
 
-def getMPDData(mpd_url, is_hs=False):
-    """Fetches and parses MPD data."""
-    headerhs = {
-        "Origin": "https://www.hotstar.com",
-        "Referer": "https://www.hotstar.com/",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
-    }
-    headerjcs = {  # Unused in this version, but kept for reference
-        "Origin": "https://www.jiocinema.com",
-        "Referer": "https://www.jiocinema.com/",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
-    }
 
-    headers_to_use = headerhs if is_hs else headers
+# Fetch Video URl details using Token
+
+def getMPDData(mpd_url,is_hs=False):
+    headerhs = {
+    "Origin": "https://www.hotstar.com",
+    "Referer": "https://www.hotstar.com/",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+    }
+    headerjcs = {
+    "Origin": "https://www.jiocinema.com",
+    "Referer": "https://www.jiocinema.com/",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+    }
+    if is_hs:
+        r = session.get(mpd_url, headers=headerhs, proxies=proxy)
+    else:
+        r = session.get(mpd_url, headers=headers, proxies=proxy)
+    if r.status_code != 200:
+        return None
 
     try:
-        r = session.get(mpd_url, headers=headers_to_use, proxies=proxy, timeout=10) # Added timeout
-        r.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
-        logging.info(f"MPD Request successful for: {mpd_url}")
+        import logging
+        logging.info(r.content)
         return xmltodict.parse(r.content), r.text
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Error fetching MPD: {e}")
-        return None
-    except xmltodict.expat.ExpatError as e:
-        logging.error(f"Error parsing MPD (XML): {e}")
+    except Exception as e:
+        print(f"[!] getMPDData: {e}")
         return None
 
 
+# Parse MPD data for PSSH maps
 def parseMPDData(mpd_per):
-    """Parses MPD data to extract PSSH and KID information."""
+    # Extract PSSH and KID
     rid_kid = {}
     pssh_kid = {}
+    import logging
+    logging.info("pase mpd data")
 
+    # Store KID to corresponding Widevine PSSH and Representation ID
     def readContentProt(rid, cp):
         _pssh = None
-        for protection in cp if isinstance(cp, list) else [cp]: #Handles single and multiple content protections
-            if protection.get("@schemeIdUri", "").lower() == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed":
-                _pssh = protection.get("cenc:pssh")
-                if _pssh:
-                    _kid = protection.get("@cenc:default_KID", "").replace("-", "")
-                    if _kid:
-                        if _pssh not in pssh_kid:
-                            pssh_kid[_pssh] = set()
-                        pssh_kid[_pssh].add(_kid)
-                        rid_kid[rid] = {"kid": _kid, "pssh": _pssh}
-                        logging.info(f"Found PSSH: {_pssh[:20]}... and KID: {_kid}") #Log only part of PSSH for brevity
-                    else:
-                        logging.warning("No KID found in ContentProtection element.")
-                else:
-                    logging.warning("No PSSH found in ContentProtection element.")
+        if cp[1]["@schemeIdUri"].lower() == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed":
+            logging.info("found pssh")
+            _pssh = cp[1]["cenc:pssh"]
 
-    try:
-        for ad_set in mpd_per.get('AdaptationSet', []): #Handles missing AdaptationSet
-            resp = ad_set.get('Representation')
-            if resp:
-                if isinstance(resp, list):
-                    for res in resp:
-                        if 'ContentProtection' in res:
-                            readContentProt(res['@id'], res['ContentProtection'])
-                else:
-                    if 'ContentProtection' in resp:
-                        readContentProt(resp['@id'], resp['ContentProtection'])
-        return rid_kid, pssh_kid
-    except (AttributeError, TypeError) as e:
-        logging.error(f"Error parsing MPD data structure: {e}")
-        return {}, {}
+        if _pssh:
+            if _pssh not in pssh_kid:
+                pssh_kid[_pssh] = set()
+
+            if cp[0]['@value'].lower() == "cenc":
+                _kid = cp[0]["@cenc:default_KID"].replace("-", "")  # Cleanup
+                logging.info("found kid")
+
+                rid_kid[rid] = {
+                    "kid": _kid,
+                    "pssh": _pssh
+                }
+                if _kid not in pssh_kid[_pssh]:
+                    pssh_kid[_pssh].add(_kid)
+
+    # Search PSSH and KID
+    for ad_set in mpd_per['AdaptationSet']:
+        resp = ad_set['Representation']
+        if isinstance(resp, list):
+            for res in resp:
+                if 'ContentProtection' in res:
+                    readContentProt(res['@id'], res['ContentProtection'])
+        else:
+            if 'ContentProtection' in resp:
+                readContentProt(resp['@id'], resp['ContentProtection'])
+
+    return rid_kid, pssh_kid
 
 
-
+# Perform Handshake with Widevine Server for License
 def getWidevineLicense(license_url, challenge, token, playback_id=None):
-    """Performs Widevine license request."""
+    # Just in case :)
     if not playback_id:
         playback_id = "27349583-b5c0-471b-a95b-1e1010a901cb"
 
@@ -369,11 +372,13 @@ def getWidevineLicense(license_url, challenge, token, playback_id=None):
     }
     drmHeaders.update(headers)
 
-    try:
-        r = session.post(license_url, data=challenge, headers=drmHeaders, proxies=proxy, timeout=10)
-        r.raise_for_status()
-        logging.info("License request successful.")
-        return r.content
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Error requesting license: {e} - {r.text if 'r' in locals() else ''}") #Include response text if available
+    r = session.post(license_url, data=challenge, headers=drmHeaders, proxies=proxy)
+    if r.status_code != 200:
+        print(f"[!] Error: {r.content}")
         return None
+
+    return r.content
+
+
+
+#Jio Cinema Downloader Bot Created By Aryan Chaudhary
