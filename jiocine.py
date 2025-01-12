@@ -1,6 +1,7 @@
 import requests
 import xmltodict
 import logging 
+logging.basicConfig(level=logging.INFO)
 
 #Jio Cinema Downloader Bot Created By Aryan Chaudhary
 # Request object with Session maintained
@@ -221,52 +222,60 @@ def get_series_episodes(content_id: str) -> list:
         logging.error(f"Error fetching series episodes: {e}")
         return None
 
+#import logging
+#import xmltodict
+# Assuming you are using requests for session and proxy
 
-# Fetch MPD Data
-def get_mpd_data(mpd_url: str, is_hs: bool = False) -> tuple:
-    headers_hs = {
+# Initialize logging
+
+
+# Fetch Video URL details using Token
+def getMPDData(mpd_url, is_hs=False):
+    headerhs = {
         "Origin": "https://www.hotstar.com",
         "Referer": "https://www.hotstar.com/",
-        "User -Agent": "Mozilla/5.0 ( Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+        "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
     }
-    headers_jcs = {
+    headerjcs = {
         "Origin": "https://www.jiocinema.com",
         "Referer": "https://www.jiocinema.com/",
         "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
     }
     
-    headers_to_use = headers_hs if is_hs else headers_jcs
+    headers = headerhs if is_hs else headerjcs  # Use appropriate headers based on is_hs
 
     try:
-        response = session.get(mpd_url, headers=headers_to_use, proxies=proxy)
-        response.raise_for_status()  # Raise an error for bad responses
-        
-        return xmltodict.parse(response.content), response.text
-    
+        r = session.get(mpd_url, headers=headers, proxies=proxy)
+        r.raise_for_status()  # Raise an error for bad responses
     except requests.RequestException as e:
-        logging.error(f"Error fetching MPD data: {e}")
+        logging.error(f"Request failed: {e}")
+        return None
+
+    try:
+        logging.info("MPD Data fetched successfully.")
+        return xmltodict.parse(r.content), r.text
+    except Exception as e:
+        logging.error(f"Error parsing MPD data: {e}")
         return None
 
 
 # Parse MPD data for PSSH maps
-def parse_mpd_data(mpd_per: dict) -> tuple:
+def parseMPDData(mpd_per):
     rid_kid = {}
     pssh_kid = {}
-    logging.info("Parsing MPD data")
+    logging.info("Parsing MPD data.")
 
-    def read_content_prot(rid, cp):
+    def readContentProt(rid, cp):
         _pssh = None
         if cp[1]["@schemeIdUri"].lower() == "urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed":
-            logging.info("Found PSSH")
+            logging.info("Found PSSH.")
             _pssh = cp[1]["cenc:pssh"]
 
         if _pssh:
-            if _pssh not in pssh_kid:
-                pssh_kid[_pssh] = set()
-
+            pssh_kid.setdefault(_pssh, set())
             if cp[0]['@value'].lower() == "cenc":
-                _kid = cp[0]["@cenc:default_KID"].replace("-", "")  # Cleanup
-                logging.info("Found KID")
+                _kid = cp[0]["@cenc:default_KID"].replace("-", "")
+                logging.info("Found KID.")
 
                 rid_kid[rid] = {
                     "kid": _kid,
@@ -274,25 +283,24 @@ def parse_mpd_data(mpd_per: dict) -> tuple:
                 }
                 pssh_kid[_pssh].add(_kid)
 
-    for ad_set in mpd_per['AdaptationSet']:
-        resp = ad_set['Representation']
+    for ad_set in mpd_per.get('AdaptationSet', []):
+        resp = ad_set.get('Representation')
         if isinstance(resp, list):
             for res in resp:
                 if 'ContentProtection' in res:
-                    read_content_prot(res['@id'], res['ContentProtection'])
-        else:
-            if 'ContentProtection' in resp:
-                read_content_prot(resp['@id'], resp['ContentProtection'])
+                    readContentProt(res['@id'], res['ContentProtection'])
+        elif 'ContentProtection' in resp:
+            readContentProt(resp['@id'], resp['ContentProtection'])
 
     return rid_kid, pssh_kid
 
 
 # Perform Handshake with Widevine Server for License
-def get_widevine_license(license_url: str, challenge: bytes, token: str, playback_id: str = None) -> bytes:
+def getWidevineLicense(license_url, challenge, token, playback_id=None):
     if not playback_id:
         playback_id = "27349583-b5c0-471b-a95b-1e1010a901cb"
 
-    drm_headers = {
+    drmHeaders = {
         "authority": "key-jio.voot.com",
         "accesstoken": token,
         "appname": "RJIL_JioCinema",
@@ -300,21 +308,25 @@ def get_widevine_license(license_url: str, challenge: bytes, token: str, playbac
         "os": "android",
         "uniqueid": "1957805b-8c2a-4110-a5d9-767da377ffce",
         "x-platform": "fireOS",
-        "x-feature-code": "ytvjywxwkn",
+        "x-feature-code": " ytvjywxwkn",
         "x-playbackid": playback_id
     }
-    
-    drm_headers.update(headers)
+    drmHeaders.update(headers)
 
     try:
-        response = session.post(license_url, data=challenge, headers=drm_headers, proxies=proxy)
-        response.raise_for_status()  # Raise an error for bad responses
-        
-        return response.content
-    
+        r = session.post(license_url, data=challenge, headers=drmHeaders, proxies=proxy)
+        r.raise_for_status()  # Raise an error for bad responses
     except requests.RequestException as e:
-        logging.error(f"Error fetching Widevine license: {e}")
+        logging.error(f"License request failed: {e}")
         return None
+
+    logging.info("License fetched successfully.")
+    return r.content
+
+
+# Jio Cinema Downloader Bot Created By Aryan Chaudhary
+
+
 
 
 # Jio Cinema Downloader Bot Created By Aryan Chaudhary
