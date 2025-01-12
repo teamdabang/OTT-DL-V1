@@ -420,58 +420,30 @@ def parseMPDData(mpd_data):
 
 
 
-# Perform Handshake with Widevine Server for License
-def getWidevineLicense(license_url, challenge, token, playback_id=None, headers=None, proxy=None):
-  """Fetches a Widevine license for playback.
+def getWidevineLicense(license_url, challenge, token, playback_id=None):
+    # Just in case :)
+    if not playback_id:
+        playback_id = "27349583-b5c0-471b-a95b-1e1010a901cb"
 
-  Args:
-      license_url (str): The URL to request the license from.
-      challenge (str): The challenge data needed for the license request.
-      token (str): The access token for authorization.
-      playback_id (str, optional): The playback ID. Defaults to None.
-      headers (dict, optional): Additional headers to include in the request. Defaults to None.
-      proxy (dict, optional): Dictionary containing proxy settings if needed. Defaults to None.
+    drmHeaders = {
+        "authority": "key-jio.voot.com",
+        "accesstoken": token,
+        "appname": "RJIL_JioCinema",
+        "devicetype": "androidstb",
+        "os": "android",
+        "uniqueid": "1957805b-8c2a-4110-a5d9-767da377ffce",
+        "x-platform": "fireOS",
+        "x-feature-code": "ytvjywxwkn",
+        "x-playbackid": playback_id
+    }
+    drmHeaders.update(headers)
 
-  Returns:
-      str: The Widevine license content on success, None otherwise.
+    r = session.post(license_url, data=challenge, headers=drmHeaders, proxies=proxy)
+    if r.status_code != 200:
+        print(f"[!] Error: {r.content}")
+        return None
 
-  Raises:
-      Exception: If an unexpected error occurs during the request or parsing.
-  """
-
-  logging.info(f"Fetching Widevine license for: {license_url}")
-
-  drmHeaders = {
-      "authority": "key-jio.voot.com",
-      "accesstoken": token,
-      "appname": "RJIL_JioCinema",
-      "devicetype": "androidstb",  # Consider making configurable
-      "os": "android",  # Consider making configurable
-      "uniqueid": "1957805b-8c2a-4110-a5d9-767da377ffce",  # Consider making configurable
-      "x-platform": "fireOS",
-      "x-feature-code": "ytvjywxwkn",
-  }
-
-  if playback_id:
-      drmHeaders["x-playbackid"] = playback_id
-
-  # Update headers if provided
-  if headers:
-      drmHeaders.update(headers)
-
-  try:
-      r = session.post(license_url, data=challenge, headers=drmHeaders, proxies=proxy)
-      r.raise_for_status()  # Raise exception for non-200 status codes
-
-      return r.content
-
-  except requests.exceptions.RequestException as e:
-     logging.error(f"Error fetching Widevine license: {e}")
-      return None
-
-  except Exception as e:  # Catch other potential errors
-     logging.error(f"Unexpected error: {e}")
-      return None
+    return r.content
 
 
 
