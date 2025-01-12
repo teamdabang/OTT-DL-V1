@@ -10,7 +10,7 @@ if ospath.exists('log.txt'):
 
 if ospath.exists('rlog.txt'):
     remove('rlog.txt')
-UPSTREAM_REPO="https://TONY-STARK-MAHESH:@github.com/TONY-STARK-MAHESH/Test"
+UPSTREAM_REPO="https://TONY-STARK-MAHESH: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@github.com/TONY-STARK-MAHESH/Test"
 UPSTREAM_BRANCH="main"
 if UPSTREAM_REPO is not None:
     if ospath.exists('.git'):
