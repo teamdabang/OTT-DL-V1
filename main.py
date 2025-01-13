@@ -5,7 +5,7 @@ import re
 import requests
 import utils
 import yt_dlp
-import jiocine
+from plugins.jiodl import *
 import subprocess
 from pyrogram import Client, filters, idle
 from urllib import parse
