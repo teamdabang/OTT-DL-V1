@@ -1349,7 +1349,7 @@ def jiodl(client, message):
     # Fetch Guest token when Not using Account token
     if not config.get("authToken") and not config.get("useAccount"):
         print("[=>] Guest Token is Missing, Requesting One")
-        guestToken = jiocine.fetchGuestToken()
+        guestToken = plugins.jiodl.jiocine.fetchGuestToken()
         if not guestToken:
             print("[!] Guest Token Not Received")
 #            exit(0)
