@@ -12,15 +12,32 @@ from plugins.jio import *
 #import logging
 import requests
 
+
+import subprocess
+import logging
+import os
+
 def downloaddash(name, key, frmts, url):
-    cmd = ['/usr/src/app/spjc', url, key, '-o', name]  # Use a list to avoid shell=True
+
+    # Define the download directory
+    download_dir = 'downloads'
+
+    # Create the download directory if it doesn't exist
+    os.makedirs(download_dir, exist_ok=True)
+
+    # Define the full path for the output file
+    output_file_path = os.path.join(download_dir, name)
+
+    cmd = [url, key, '-o', output_file_path]  # Use the full path for the output file
     try:
-        result = subprocess.run(cmd, check=True, capture_output=True, text=True)  # capture_output=True for Python 3.7+
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
         logging.info(f"Download and decryption successful: {result.stdout}")
     except subprocess.CalledProcessError as e:
         logging.error(f"Error during download: {e.stderr}")
-        return "failed"
+        raise RuntimeError("Download failed") from e  # Raise a more informative error
     return "done"
+
+
 
 
 
