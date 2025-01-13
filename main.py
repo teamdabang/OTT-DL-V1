@@ -919,7 +919,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                     print(f"Error fetching content URL: {e}")    
 
             import logging
-            logging.info(r)
+            
             import xmltodict
             logging.info(r.content)
             import re
