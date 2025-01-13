@@ -11,7 +11,7 @@ def downloadformat(ydl_opts, url, info):
         return file_path
 
 def decrypt_vod_mp4(kid, key, input_path, output_path):
-    mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
+   # mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
     command = ["mp4decrypt", '--key', f"{kid}:{key}", input_path, output_path]
     
     process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
@@ -22,7 +22,7 @@ def decrypt_vod_mp4(kid, key, input_path, output_path):
     return "Decryption completed successfully."
 
 def merge_vod_ffmpeg(in_video, in_audio, output_path):
-    ffmpegPath = realPath(joinPath(scriptsDir, config.get('ffmpegPath')))
+   # ffmpegPath = realPath(joinPath(scriptsDir, config.get('ffmpegPath')))
     command = ["ffmpeg", '-hide_banner', '-i', in_video, '-i', in_audio, '-c:v', 'copy', '-c:a', 'copy', output_path]
     
     process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
