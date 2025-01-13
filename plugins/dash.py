@@ -13,7 +13,32 @@ from plugins.jio import *
 import requests
 from cryptography.fernet import Fernet
 
-def downloaddash(name, key, frmts, url):
+
+import subprocess
+import logging
+
+def downloaddash(name: str, key: str = None, frmts: str = None, url: str) -> str:
+    # Construct the command for yt-dlp
+    cmd = ['yt-dlp', url, '-o', name]
+    
+    # Add format if provided
+    if frmts:
+        cmd.extend(['-f', frmts])
+    
+    # Add authentication key if provided
+    if key:
+        cmd.extend(['--key', key])  # Example placeholder; depends on yt-dlp usage
+
+    try:
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        logging.info(f"Download successful: {result.stdout}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error during download: {e.stderr}")
+        return "failed"
+
+    return f"done: {name}"
+
+def downloadduash(name, key, frmts, url):
     # Download the file
     try:
         response = requests.get(url)
