@@ -11,6 +11,11 @@ from pyrogram import Client, filters, idle
 from urllib import parse
 import logging
 import os
+from plugins.dl import *
+from plugins.exec import *
+from plugins.jio import *
+from plugins.dash import *
+
 from base64 import b64decode, b64encode
 from yt_dlp.postprocessor import PostProcessor
 from utils import scriptsDir, joinPath, realPath
