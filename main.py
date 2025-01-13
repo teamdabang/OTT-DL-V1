@@ -587,7 +587,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
                 ms.edit("Uploading To Google Drive it takes just below 1 minute")
                 import time
-                from gdrive import GoogleDriveUploader
+                #from gdrive import GoogleDriveUploader
                 srt = time.time()
                 upload_path = "BOT Uploads/{}/{}".format("OTTDOWNLOAD", "Driver")
                 uploader = GoogleDriveUploader(app, ms, srt)
@@ -598,7 +598,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
             try:
                 #file_path = ydl.prepare_filename(content_info)
                 file_path = file_path[:-1][:-1][:-1][:-1]+".mkv"
-                from gdrive import GoogleDriveUploader
+                #from gdrive import GoogleDriveUploader
                 import time
                 upload_path = "BOT Uploads/{}/{}".format("OTTDOWNLOAD", "Driver")
                 srt = time.time()
@@ -615,7 +615,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
     global default_strm
     
     print(f'[=>] Fetching Playback Details')
-    content_playback = jiocine.fetchPlaybackData(_content_id, config.get("authToken"))
+    content_playback = fetchPlaybackData(_content_id, config.get("authToken"))
     if not content_playback:
         print("[X] Playback Details Not Found!")
 #        exit(0)
@@ -631,7 +631,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
     try:
         playback_urls = content_playback["playbackUrls"]
     except Exception:
-        content_playback = jiocine.fetchPlaybackDataold(_content_id, config.get("authToken"))
+        content_playback = fetchPlaybackDataold(_content_id, config.get("authToken"))
         playback_urls = content_playback["playbackUrls"]
 
     # Choose Playback Url
