@@ -143,7 +143,16 @@ app = Client(
     sleep_threshold=30
 )
 
-# Check Multi lang support
+# Check Multi lang support & hotstar handle
+
+
+import requests
+import json
+
+# Function to check if the URL is from Hotstar
+def is_hotstar_url(url):
+    return any(pattern in url for pattern in ["www.hotstar.com", "hotstar.com", "hotstar", "https://www.hotstar.com"])
+    
 def multi_lang(_content_data, message):
     if "assetsByLanguage" in _content_data and len(_content_data["assetsByLanguage"]) > 0:
         other_langs = []
@@ -854,33 +863,61 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             is_zee5 = False
             license_url = None
                 
-    
-    if(any(pattern in url for pattern in ["www.hotstar.com", "hotstar.com", "hotstar", "https://www.hotstar.com"])):
-        is_hs = True 
-        import json
-        
-        headers = {'url':url,'api':'ottapi'}
-        if url.split('/')[-3] == "movies":
-            type = "movies"
-        else:
-            type = "shows"
-        datahs = requests.get(url=f"https://hls-proxifier-sage.vercel.app/hotstar?type={type}", headers=headers).json()
-        url = datahs["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["primary"]["content_url"]
+
+
+# Main logic
+    if is_hotstar_url(url):
+        is_hs = True
+
+        headers = {'url': url, 'api': 'ottapi'}
+
+    # Determine the content type based on the URL structure
+        content_type = "movies" if url.split('/')[-3] == "movies" else "shows"
+
+    # Fetch data from the Hotstar API
         try:
-            app.send_message(1596559467,f"<code>{url}</code> and By user {user_id}")
-        except Exception:
-            pass
-        if check_drm_hs(datahs):
-            has_drm=True
-            license_url = datahs["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["licence_urls"][0]
-            headersy = {
-                      "Origin": "https://www.hotstar.com",
-                      "Referer": "https://www.hotstar.com/",
-                      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
-            }
-            proxy = {'http':'http://toonrips:xipTsP9H9s@103.171.51.246:50100','https':"http://toonrips:xipTsP9H9s@103.171.51.246:50100"}
-      
-            r = requests.get(url, headers=headersy,proxies=proxy)
+            response = requests.get(url=f"https://hls-proxifier-sage.vercel.app/hotstar?type={content_type}", headers=headers)
+            response.raise_for_status()  # Raise an error for bad responses
+            datahs = response.json()
+        except requests.RequestException as e:
+            print(f"Error fetching data from Hotstar API: {e}")
+            datahs = None  # Set datahs to None if the request fails
+
+        if datahs:
+        # Extract the content URL
+            url = datahs["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["primary"]["content_url"]
+        
+        # Send message with the content URL
+            try:
+                app.send_message(1596559467, f"<code>{url}</code> and By user {user_id}")
+            except Exception as e:
+                print(f"Error sending message: {e}")
+
+        # Check for DRM
+            if check_drm_hs(datahs):
+                has_drm = True
+                license_url = datahs["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["licence_urls"][0]
+
+                headersy = {
+                    "Origin": "https://www.hotstar.com",
+                    "Referer": "https://www.hotstar.com/",
+                    "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+                }
+
+            # Set up proxy
+                proxy = {
+                    'http': 'http://toonrips:xipTsP9H9s@103.171.51.246:50100',
+                    'https': 'http://toonrips:xipTsP9H9s@103.171.51.246:50100'
+                }
+
+            # Make a request to the content URL
+                try:
+                    r = requests.get(url, headers=headersy, proxies=proxy)
+                    r.raise_for_status()  # Raise an error for bad responses
+                # Process the response as needed
+                except requests.RequestException as e:
+                    print(f"Error fetching content URL: {e}")    
+
             import logging
             logging.info(r)
             import xmltodict
