@@ -971,6 +971,9 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             import logging
             logging.info(r)
             import xmltodict
+            def getkid(test):
+                    for key,value in test.items():
+                        return key
             logging.info(r.text)
             
             import re
@@ -1000,6 +1003,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         # Need to fetch even if one key missing
                 fetch_keys = False
                 if pssh in pssh_cache:
+                    kid = getkid(pssh_cache[pssh])
                     fetch_keys = False
                     
                 else:
@@ -1009,6 +1013,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
                     logging.info("fetching keys")
                     pssh_cache[pssh] = requests.get(url='https://hls-proxifier-sage.vercel.app/sliv',headers={"url":license_url,"pssh":pssh}).json()["keys"]
                     config.set("psshCacheStore", pssh_cache)
+                    kid = getkid(pssh_cache[pssh])
         else:
             license_url = None
         is_sliv=True 
