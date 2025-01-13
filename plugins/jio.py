@@ -6,6 +6,10 @@ import subprocess
 import threading
 import time
 
+from plugins.dl import *
+from plugins.exec import *
+from plugins.dash import *
+
 LANG_MAP = {
     "en": "English",
     "hi": "Hindi",
