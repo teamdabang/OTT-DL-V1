@@ -13,3 +13,4 @@ pytz
 hachoir
 pydrive
 pydrive2
+cryptography
