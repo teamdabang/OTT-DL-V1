@@ -5,6 +5,8 @@ import logging
 import os
 from plugins.dl import *
 from plugins.exec import *
+from plugins.jio import *
+
 def downloaddash(name, key, frmts, url):
     cmd = f'/usr/src/app/spjc "{url}" {key} -o "{name}"'
     try:
