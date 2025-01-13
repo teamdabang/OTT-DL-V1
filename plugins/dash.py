@@ -17,7 +17,18 @@ import subprocess
 import logging
 import os
 
+
 def downloaddash(name, key, frmts, url):
+    cmd = f'/usr/src/app/spjc "{url}" {key} -o "{name}"'
+    try:
+        result = subprocess.run(cmd, shell=True, check=True, capture_output=True)
+        logging.info(f"Download and decryption successful: {result.stdout.decode()}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error during download: {e.stderr.decode()}")
+        return "failed"
+    return "done"
+
+def loaddash(name, key, frmts, url):
 
     # Define the download directory
     download_dir = 'downloads'
