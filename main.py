@@ -334,9 +334,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
             
         if(any(pattern in url for pattern in ["www.sonyliv.com", "sonyliv.com", "sonyliv", "https://www.sonyliv.com"])):
             is_sliv=True 
-           # token = requests.get("https://ccroute.vercel.app/sliv").json()["token"]
-           # ydl_opts['username']='token'
-          #  ydl_opts['password']= token
+
             output_name = "SonyLiv"
             head = {
                       "x-playback-session-id": "47c6938a7c5c4bd48d503e330c9e6512-1735474637849"
@@ -620,12 +618,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
         print("[X] Playback Details Not Found!")
 #        exit(0)
 
-    # Display Content Info
-    # print(f'[*] Id: {content_playback["contentId"]}')
-    # print(f'[*] Name: {content_playback["fullTitle"]}')
-    # print(f'[*] Type: {content_playback["contentType"]}')
-    # print(f'[*] Language: {content_playback["defaultLanguage"]}')
-    # print(f'[*] Total Duration: {content_playback["totalDuration"]}')
+
 
     playback_data = None
     try:
@@ -830,9 +823,6 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             
             pssh_kid, to_use_pssh = extract_unique_pssh_and_kid(r.content)
             
-
-        #    rid_kid, pssh_kid = jiocine.parseMPDData(periods)
-           # rid_map = rid_kid
             pssh_cache = config.get("psshCacheStore")
 
     # Get Keys for all KIDs of PSSH
@@ -920,9 +910,6 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             
             pssh_kid, to_use_pssh = extract_unique_pssh_and_kid(r.content)
             
-
-        #    rid_kid, pssh_kid = jiocine.parseMPDData(periods)
-           # rid_map = rid_kid
             pssh_cache = config.get("psshCacheStore")
 
     # Get Keys for all KIDs of PSSH
@@ -1001,8 +988,6 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
 
             
 
-        #    rid_kid, pssh_kid = jiocine.parseMPDData(periods)
-           # rid_map = rid_kid
             pssh_cache = config.get("psshCacheStore")
 
     # Get Keys for all KIDs of PSSH
@@ -1113,7 +1098,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
               he = "unknown"
             vbr = lang["vbr"]
             k = f"Video-{he}p-{vbr}Kbps"
-         #   k = f"Video-{lang["height"]}p-{lang["vbr"]}Kbps"
+         
             buttons.ibutton(k, f"d_{format_id}_{ci}_{user_id}_None")
             start = chr(ord(start) + 1)
       json.dump(frmts, writ)
@@ -1177,11 +1162,7 @@ def download_button(_, callback_query):
         callback_query.answer("Can't Select Again Try Reload # Created By Mahesh Kadali")
         return
     elif data == "reload":
- #       print(user_id)
-#        print(callback_query.from_user.id)
-   #     if int(user_id.replace(" ","")) != int(callback_query.from_user.id):
-  #          callback_query.answer("Not Yours Query Button")
- #           return
+
         with open(f"{user_id}.json",'r') as f:
             datajc = json.load(f)
         name = datajc['name']
@@ -1197,16 +1178,7 @@ def download_button(_, callback_query):
         formats = datajc['formats']
         language = datajc['language']
         formatid = "None"
-        lang = "None"
-       # formatid = f"{formats}+{data}".replace("None","").replace("none","").replace("None+","").replace("none+","").replace(" ","").replace("++","+")
-     #   print(formatid)
-      #  lang = lang.upper()
-#        fromatid = formatid[:-1]
-#        format_ids = formatid.split('+')
- #       unique_format_ids = set(format_ids)
-#        formatid = formatid[1:]
-  #      formatid = '+'.join(unique_format_ids)
-       # lang = f"{language}+{lang}".replace("None","").replace(" ","").replace("NONE","").replace("NONE+","").replace("++","")
+        lang = "None" 
         keys = {"rid_map":rid_map,"has_drm":has_drm,"spjc":spjc,"name":name,"license_url":license_url,"is_hs":is_hs,"is_multi":is_multi,"is_series":is_series,"content_id":ci,"url":url, "formats": formatid , "language":lang}
         with open(f"{user_id}.json",'w') as f:
             json.dump(keys,f)
@@ -1256,9 +1228,7 @@ def download_button(_, callback_query):
         return
     
     else:
-    #    if user_id != callback_query.from_user.id:
-     #       callback_query.answer("Not Yours Query Button")
-      #      return
+
         with open(f"{user_id}.json",'r') as f:
             datajc = json.load(f)
         rid_map = datajc['rid_map']
