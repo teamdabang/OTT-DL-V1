@@ -3,7 +3,8 @@ import subprocess
 import json
 import logging
 import os
-
+from plugins.dl import *
+from plugins.exec import *
 def downloaddash(name, key, frmts, url):
     cmd = f'/usr/src/app/spjc "{url}" {key} -o "{name}"'
     try:
