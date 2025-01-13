@@ -7,7 +7,39 @@ from plugins.dl import *
 from plugins.exec import *
 from plugins.jio import *
 
+
+
+#import logging
+import requests
+from cryptography.fernet import Fernet
+
 def downloaddash(name, key, frmts, url):
+    # Download the file
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an error for bad responses
+        encrypted_data = response.content
+        logging.info("Download successful.")
+    except requests.RequestException as e:
+        logging.error(f"Error during download: {e}")
+        return "failed"
+
+    # Decrypt the file
+    try:
+        fernet = Fernet(key)
+        decrypted_data = fernet.decrypt(encrypted_data)
+
+        # Save the decrypted data to a file
+        with open(name, 'wb') as file:
+            file.write(decrypted_data)
+        logging.info("Decryption and file writing successful.")
+    except Exception as e:
+        logging.error(f"Error during decryption: {e}")
+        return "failed"
+
+    return "done"
+    
+def downltoaddash(name, key, frmts, url):
     cmd = f'/usr/src/app/spjc "{url}" {key} -o "{name}"'
     try:
         result = subprocess.run(cmd, shell=True, check=True, capture_output=True)
