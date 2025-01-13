@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app
 COPY . .
 
-RUN python3 -m pip install -U https://github.com/aarubui/yt-dlp-mp4decrypt/archive/master.zip
+RUN pip install -U https://github.com/aarubui/yt-dlp-mp4decrypt/archive/master.zip
 RUN pip install -r requirements.txt && mv "__main__ (1)" yt-dlp && rm /usr/local/bin/yt-dlp && mv yt-dlp /usr/local/bin/yt-dlp && chmod 777 /usr/local/bin/yt-dlp && mv mp4decrypt /usr/bin/mp4decrypt && chmod 777 /usr/bin/mp4decrypt 
 RUN rm -rf /usr/local/lib/python3.9/site-packages/yt_dlp && cd /usr/local/lib/python3.9/site-packages/ && git clone https://github.com/aryanchy451/yt-dlp && mv yt-dlp/yt_dlp yt_dlp && rm -rf yt-dlp
 CMD python main.py
