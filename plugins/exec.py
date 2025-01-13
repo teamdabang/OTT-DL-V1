@@ -4,7 +4,9 @@ from pyrogram import Client
 from pyrogram.enums import ParseMode
 from pyrogram.types import InputMediaPhoto
 from pyrogram.errors import ReplyMarkupInvalid, FloodWait, PeerIdInvalid, ChannelInvalid, RPCError, UserNotParticipant, MessageNotModified, MessageEmpty, PhotoInvalidDimensions, WebpageCurlFailed, MediaEmpty
-
+from plugins.dl import *
+from plugins.jio import *
+from plugins.dash import *
 
 #from asyncio import sleep
 
