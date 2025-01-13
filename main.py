@@ -173,7 +173,7 @@ def multi_lang(_content_data, message):
     # Default language
     def_lang = _content_data["defaultLanguage"]
     return {
-        'id': jiocine.REV_LANG_MAP[def_lang],
+        'id': REV_LANG_MAP[def_lang],
         'name': def_lang,
         'assetsId': _content_data['id'],
     }
@@ -232,7 +232,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     print(is_multi)
     if is_jc:
-        content = jiocine.getContentDetails(content_id)
+        content = getContentDetails(content_id)
     else:
         content = {"isPremium": False}
     base_url = url
@@ -250,7 +250,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     # Add more Headers
     if is_jc:
       ydl_headers = {}
-      ydl_headers.update(jiocine.headers)
+      ydl_headers.update(headers)
       
     ydl_opts = {
         'no_warnings': True,
@@ -1045,7 +1045,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         download_vod_ytdlp(url, message, ci, user_id, is_multi=is_multi)
         return "se"	
     if is_jc:
-        content = jiocine.getContentDetails(ci)
+        content = getContentDetails(ci)
         print("nice")
         if is_jc:
             is_series_episode = content["mediaType"] == "EPISODE"
@@ -1349,7 +1349,7 @@ def jiodl(client, message):
     # Fetch Guest token when Not using Account token
     if not config.get("authToken") and not config.get("useAccount"):
         print("[=>] Guest Token is Missing, Requesting One")
-        guestToken = plugins.jiodl.jiocine.fetchGuestToken()
+        guestToken = fetchGuestToken()
         if not guestToken:
             print("[!] Guest Token Not Received")
 #            exit(0)
@@ -1398,7 +1398,7 @@ def jiodl(client, message):
     print('[=>] Fetching Content Details')
     # content_id = 3216132  # 3760812  # 4K Test: 3719559
     try:
-        content_data = jiocine.getContentDetails(content_id)
+        content_data = getContentDetails(content_id)
     except Exception as e:
         m.edit("Trying Other Ott Dl Beta Phase in 2 Secs")
         message = m
@@ -1444,7 +1444,7 @@ def jiodl(client, message):
         m.edit(f'[+] Language: {lang_data["name"]}')
         # Update Content Details
         content_id = lang_data['assetsId']
-        content_data = jiocine.getContentDetails(content_id)
+        content_data = getContentDetails(content_id)
         if not content_data:
             print("[X] Content Details Not Found!")
  #           exit(0)
@@ -1464,7 +1464,7 @@ def jiodl(client, message):
     
             season_id = content_data['seasonId']
             att = 0
-            season_data = jiocine.getContentDetails(season_id)
+            season_data = getContentDetails(season_id)
             if not season_data:
                 print("[X] Season Details Not Found!")
                 exit(0)
@@ -1475,7 +1475,7 @@ def jiodl(client, message):
             print(f'[*] Default Language: {season_data["defaultLanguage"]}')
             print(f'[*] Release Year: {season_data["releaseYear"]}')
 
-            episodes = jiocine.getSeriesEpisodes(season_id)
+            episodes = getSeriesEpisodes(season_id)
             if not episodes:
                 print("[X] Season Episodes Not Found!")
   #              exit(0)
@@ -1485,7 +1485,7 @@ def jiodl(client, message):
                 episode_id = episode['id']
                 att = att + 1
        
-                episode_data = jiocine.getContentDetails(episode_id)
+                episode_data = getContentDetails(episode_id)
                 if not episode_data:
                     print(f"[X] Episode-{idx + 1} Details Not Found!")
                     continue
@@ -1496,7 +1496,7 @@ def jiodl(client, message):
                         if lang_data["id"] == lang['id']:
                             # Change Language
                             episode_id = lang['assetId']
-                            episode_data = jiocine.getContentDetails(episode_id)
+                            episode_data = getContentDetails(episode_id)
                             if not episode_data:
                                 print(f"[X] Episode-{idx + 1} Details Not Found!!")
                                 continue
