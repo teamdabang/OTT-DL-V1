@@ -553,7 +553,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                                     status.edit(f"[🥰]<code> Decrypting </code> With Keys Please Wait {filepath}")
                                     self.to_screen(filepath)
                                     self.to_screen(outPath)
-                                    decrypt_vod_mp4d(kid, _data[kid], filepath, outPath)
+                                    decrypt_vod_mp4(kid, _data[kid], filepath, outPath)
                                     del_paths.append(filepath)
                                     dec_paths.append(outPath)
 
