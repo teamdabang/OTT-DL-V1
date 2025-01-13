@@ -679,7 +679,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
         # Download MPD manifest for PSSH
         print(f'[=>] Getting MPD manifest data')
 
-        mpd_data, reso = jiocine.getMPDData(playback_data["url"])
+        mpd_data, reso = getMPDData(playback_data["url"])
         
         if not mpd_data:
             print("[!] Failed to get MPD manifest")
@@ -690,7 +690,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
             print("[!] Failed to parse MPD manifest")
             exit(0)
 
-        rid_kid, pssh_kid = jiocine.parseMPDData(periods)
+        rid_kid, pssh_kid = parseMPDData(periods)
         print(pssh_kid)
         print(rid_kid)
         if len(pssh_kid) > 0:
