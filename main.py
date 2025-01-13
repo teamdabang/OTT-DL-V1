@@ -196,74 +196,10 @@ def fetch_widevine_keys(pssh_kid_map, content_playback, playback_data):
             pssh_cache[pssh] = requests.get(url='https://hls-proxifier-sage.vercel.app/jc',headers={"pyid":content_playback["playbackId"],"url":playback_data["licenseurl"],"pssh":pssh}).json()["keys"]
             config.set("psshCacheStore", pssh_cache)
 # Use mp4decrypt to decrypt vod(video on demand) using kid:key
-def downloaddash(name,key,frmts,url):
-    
-    cmd = f'/usr/src/app/spjc "{url}" {key} -o "{name}"'
-    hi = subprocess.run(cmd,shell=True)
-    return "done"
-def detector(ci,fr):
-    with open(f"info{ci}.json","r") as file:
-        
-        data = json.load(file)
-        for frm in data['formats']:
-            frmid = frm['format_id']
-            if frmid == fr:
-                if frm['resolution'] == "audio only":
-                    return 1
-                else:
-                    return 2
-def mergeall(files,outpath):
-    cmd = f'ffmpeg -y '
-    for i, audio in enumerate(files):
-            
-            cmd += f'-i "{audio}" '
-    cmd += '-map 0:v '
-#ffmpeg -i input.mp4 -map 0:v -map 0:a:0 -map 0:a:1 -map 0:a:2 -c:v copy -c:a copy output.mp4
-#for i in range(len(self.audio_data)):
-#            ffmpeg_opts.extend(["-map", f"{i+1}:a:0"])
-#    cmd += '-map 0:a:0? '
-    for i in range(len(files)-1):
-       cmd += f'-map {i+1}:a:0 '
-    cmd += f'-c:v copy -c:a copy "{outpath}" '
-    import logging
-    logging.info("merged")
-    process = subprocess.run(cmd, shell=True)
-    return 1
-    
 
-def downloadformat(ydl_opts,url,info):
-    
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
-        file_path = ydl.prepare_filename(info)
-        return file_path
-        
-def decrypt_vod_mp4(kid, key, input_path, output_path):
-    # Create mp4decrypt command
-    mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
-    command = ["mp4decrypt", '--key', f"{kid}:{key}", input_path, output_path]
-    process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
-    try:
-        process.wait()
-    except Exception:
-        pass
-    return "Done"
-        
-def decrypt_vod_mp4d(kid, key, input_path, output_path):
-    # Create mp4decrypt command
-    mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
-    command = ["mp4decrypt", '--key', f"{kid}:{key}", input_path, output_path]
-    process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
-    return "Done"
     
 
 
-# Use ffmpeg to merge video and audio
-def merge_vod_ffmpeg(in_video, in_audio, output_path):
-    # Create ffmpeg command
-    ffmpegPath = realPath(joinPath(scriptsDir, config.get('ffmpegPath')))
-    command = ["ffmpeg", '-hide_banner', '-i', in_video, '-i', in_audio, '-c:v', 'copy', '-c:a', 'copy', output_path]
-    process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
     
     
 
