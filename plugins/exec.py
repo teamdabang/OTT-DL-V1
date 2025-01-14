@@ -9,7 +9,7 @@ from plugins.jio import *
 from plugins.dash import *
 from plugins.handler.playback import *
 from plugins.handler.mhandler import* 
-
+from plugins.dl import *
 #from asyncio import sleep
 
 from random import choice as rchoice
