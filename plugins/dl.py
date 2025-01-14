@@ -12,7 +12,7 @@ def downloadformat(ydl_opts, url, info):
 
 def decrypt_vod_mp4(kid, key, input_path, output_path):
    # mp4decPath = realPath(joinPath(scriptsDir, config.get('mp4decPath')))
-    command = ["mp4decrypt", '--key', f"{kid}:{key}", input_path, output_path]
+    command = ['--key', f"{kid}:{key}", input_path, output_path]
     
     process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
     
