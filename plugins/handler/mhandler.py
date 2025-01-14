@@ -291,10 +291,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     import logging
     if is_hs:
       for fr in frmts:
-        ydl_opts['postprocessors'] = []
-        ydl_opts['fixup'] = 'never'
-        ydl_opts['recode'] = False
-#        ydl_opts['paths']['home'] = "downloads"
+
         r = detector(content_id,fr)
         if r == 1:
             ns = content_id + f'.{fr}' + '.%(ext)s'
