@@ -1,12 +1,18 @@
+import pyrogram 
+import logging 
+import requests 
+from main import *
+
+
 def multi_lang(_content_data, message):
     if "assetsByLanguage" in _content_data and len(_content_data["assetsByLanguage"]) > 0:
         other_langs = []
 
         for _lang in _content_data["assetsByLanguage"]:
-            if _lang['id'] in jiocine.LANG_MAP:
+            if _lang['id'] in LANG_MAP:
                 other_langs.append({
                     'id': _lang['id'],
-                    'name': jiocine.LANG_MAP[_lang['id']],
+                    'name': LANG_MAP[_lang['id']],
                     'assetsId': _lang['assetId']
                 })
         langr = "-"
