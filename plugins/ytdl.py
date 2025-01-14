@@ -8,13 +8,13 @@ import yt_dlp
 from plugins.jiodl import *
 from plugins.gdrive import *
 import subprocess
-from pyrogram import Client, filters, idle
+from pyrogram import filters, idle
 from urllib import parse
 import logging
 import os
 from plugins.handler.playback import *
 from plugins.buttons import *
-
+from pyrogram import Client as app
 from plugins.handler.mhandler import *
 from plugins.dl import *
 from plugins.exec import *
