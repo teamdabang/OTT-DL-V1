@@ -283,7 +283,18 @@ def fetchPlaybackDataold(content_id, token):
 
 # Ensure you have requests installed
 
+
 def getMPDData(mpd_url, is_hs=False):
+    """
+    Fetches and parses MPD data from the specified URL.
+
+    Parameters:
+    - mpd_url (str): The URL to fetch the MPD data from.
+    - is_hs (bool): Flag to indicate if the request is for Hotstar (True) or JioCinema (False).
+
+    Returns:
+    - tuple: (parsed_data, raw_text) if successful, (None, error_message) if an error occurs.
+    """
     # Define headers for Hotstar and JioCinema
     headerhs = {
         "Origin": "https://www.hotstar.com",
@@ -311,11 +322,10 @@ def getMPDData(mpd_url, is_hs=False):
         return xmltodict.parse(r.content), r.text
     except requests.exceptions.HTTPError as http_err:
         logging.error(f"[!] HTTP error occurred: {http_err} - URL: {mpd_url}")
+        return None, str(http_err)
     except Exception as e:
         logging.error(f"[!] An error occurred: {e} - URL: {mpd_url}")
-    
-    return None
-
+        return None, str(e)
 
 
 
