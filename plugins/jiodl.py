@@ -281,31 +281,44 @@ def fetchPlaybackDataold(content_id, token):
 
   # Ensure requests is imported
 
-def getMPDData(mpd_url,is_hs=False):
+# Ensure you have requests installed
+
+def getMPDData(mpd_url, session, proxy, is_hs=False):
+    # Define headers for Hotstar and JioCinema
     headerhs = {
-    "Origin": "https://www.hotstar.com",
-    "Referer": "https://www.hotstar.com/",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+        "Origin": "https://www.hotstar.com",
+        "Referer": "https://www.hotstar.com/",
+        "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
     }
     headerjcs = {
-    "Origin": "https://www.jiocinema.com",
-    "Referer": "https://www.jiocinema.com/",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+        "Origin": "https://www.jiocinema.com",
+        "Referer": "https://www.jiocinema.com/",
+        "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
     }
-    if is_hs:
-        r = session.get(mpd_url, headers=headerhs, proxies=proxy)
-    else:
-        r = session.get(mpd_url, headers=headers, proxies=proxy)
-    if r.status_code != 200:
-        return None
-
+    
+    # Select headers based on the service
+    headers = headerhs if is_hs else headerjcs
+    
     try:
-        import logging
+        # Make the GET request
+        r = session.get(mpd_url, headers=headers, proxies=proxy)
+        r.raise_for_status()  # Raise an error for bad responses (4xx and 5xx)
+        
+        # Log the response content for debugging
         logging.info(r.content)
+        
+        # Parse and return the XML data
         return xmltodict.parse(r.content), r.text
+    except requests.exceptions.HTTPError as http_err:
+        logging.error(f"[!] HTTP error occurred: {http_err} - URL: {mpd_url}")
     except Exception as e:
-        print(f"[!] getMPDData: {e}")
-        return None
+        logging.error(f"[!] An error occurred: {e} - URL: {mpd_url}")
+    
+    return None
+
+
+
+
 
 def parseMPDData(mpd_per):
     # Extract PSSH and KID
