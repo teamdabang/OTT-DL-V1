@@ -8,6 +8,7 @@ from pyrogram import Client, filters, idle
 from urllib import parse
 import logging
 import os
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 
