@@ -1,7 +1,23 @@
-import pyrogram 
-import logging 
-import requests 
+import json
+import re
+import requests
 from main import *
+
+
+import utils
+import yt_dlp
+from plugins.jiodl import *
+import subprocess
+from pyrogram import Client, filters, idle
+from urllib import parse
+import logging
+import os
+from plugins.dl import *
+from plugins.exec import *
+from plugins.jio import *
+from plugins.dash import *
+from yt_dlp.postprocessor import PostProcessor
+from utils import scriptsDir, joinPath, realPath
 
 
 def multi_lang(_content_data, message):
