@@ -283,7 +283,7 @@ def fetchPlaybackDataold(content_id, token):
 
 # Ensure you have requests installed
 
-def getMPDData(mpd_url, session, proxy, is_hs=False):
+def getMPDData(mpd_url, is_hs=False):
     # Define headers for Hotstar and JioCinema
     headerhs = {
         "Origin": "https://www.hotstar.com",
