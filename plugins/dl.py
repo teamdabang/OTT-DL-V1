@@ -5,7 +5,7 @@ from plugins.jio import *
 from plugins.dash import *
 from plugins.handler.playback import *
 from plugins.handler.mhandler import* 
-from plugins.dl import *
+from plugins.ytdl import *
 
 def downloadformat(ydl_opts, url, info):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
