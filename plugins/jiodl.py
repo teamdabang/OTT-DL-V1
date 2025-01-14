@@ -284,48 +284,35 @@ def fetchPlaybackDataold(content_id, token):
 # Ensure you have requests installed
 
 
-def getMPDData(mpd_url, is_hs=False):
-    """
-    Fetches and parses MPD data from the specified URL.
 
-    Parameters:
-    - mpd_url (str): The URL to fetch the MPD data from.
-    - is_hs (bool): Flag to indicate if the request is for Hotstar (True) or JioCinema (False).
-
-    Returns:
-    - tuple: (parsed_data, raw_text) if successful, (None, error_message) if an error occurs.
-    """
-    # Define headers for Hotstar and JioCinema
+def getMPDData(mpd_url,is_hs=False):
     headerhs = {
-        "Origin": "https://www.hotstar.com",
-        "Referer": "https://www.hotstar.com/",
-        "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+    "Origin": "https://www.hotstar.com",
+    "Referer": "https://www.hotstar.com/",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
     }
     headerjcs = {
-        "Origin": "https://www.jiocinema.com",
-        "Referer": "https://www.jiocinema.com/",
-        "User -Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+    "Origin": "https://www.jiocinema.com",
+    "Referer": "https://www.jiocinema.com/",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
     }
-    
-    # Select headers based on the service
-    headers = headerhs if is_hs else headerjcs
-    
-    try:
-        # Make the GET request
+    if is_hs:
+        r = session.get(mpd_url, headers=headerhs, proxies=proxy)
+    else:
         r = session.get(mpd_url, headers=headers, proxies=proxy)
-        r.raise_for_status()  # Raise an error for bad responses (4xx and 5xx)
-        
-        # Log the response content for debugging
+    if r.status_code != 200:
+        return None
+
+    try:
+        import logging
         logging.info(r.content)
-        
-        # Parse and return the XML data
         return xmltodict.parse(r.content), r.text
-    except requests.exceptions.HTTPError as http_err:
-        logging.error(f"[!] HTTP error occurred: {http_err} - URL: {mpd_url}")
-        return None, str(http_err)
     except Exception as e:
-        logging.error(f"[!] An error occurred: {e} - URL: {mpd_url}")
-        return None, str(e)
+        print(f"[!] getMPDData: {e}")
+        return None
+
+
+
 
 
 
