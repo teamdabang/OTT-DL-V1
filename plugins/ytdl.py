@@ -25,6 +25,13 @@ from base64 import b64decode, b64encode
 from yt_dlp.postprocessor import PostProcessor
 from utils import scriptsDir, joinPath, realPath
 from asyncio import create_subprocess_exec, create_subprocess_shell, run_coroutine_threadsafe, sleep
+
+
+def check_drm_hs(data):
+    if data["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["licence_urls"][0] == "":
+        return False
+    else:
+        return True
 #from button import ButtonMaker
 
 
