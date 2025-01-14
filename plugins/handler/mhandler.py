@@ -3,7 +3,7 @@ import re
 import requests
 from main import *
 
-from plugins.dl import *
+from plugins.ytdl import *
 import utils
 import yt_dlp
 from plugins.jiodl import *
