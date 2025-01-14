@@ -7,6 +7,8 @@ from pyrogram.errors import ReplyMarkupInvalid, FloodWait, PeerIdInvalid, Channe
 from plugins.dl import *
 from plugins.jio import *
 from plugins.dash import *
+from plugins.handler.playback import *
+from plugins.handler.mhandler import* 
 
 #from asyncio import sleep
 
