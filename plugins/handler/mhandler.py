@@ -19,8 +19,6 @@ from plugins.dash import *
 from yt_dlp.postprocessor import PostProcessor
 from utils import scriptsDir, joinPath, realPath
 
-from plugins.handler.mhandler import *
-
 
 from base64 import b64decode, b64encode
 from asyncio import create_subprocess_exec, create_subprocess_shell, run_coroutine_threadsafe, sleep
