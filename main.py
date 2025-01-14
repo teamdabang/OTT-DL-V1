@@ -12,6 +12,8 @@ from pyrogram import Client, filters, idle
 from urllib import parse
 import logging
 import os
+
+from plugins.handler.mhandler import *
 from plugins.dl import *
 from plugins.exec import *
 from plugins.jio import *
