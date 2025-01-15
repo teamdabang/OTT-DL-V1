@@ -10,7 +10,7 @@ from pyrogram import Client, filters, idle
 from urllib import parse
 import logging
 import os
-
+from plugins.jiodl import *
 
 from plugins.dl import *
 from plugins.exec import *
