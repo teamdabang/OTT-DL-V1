@@ -129,8 +129,8 @@ def extractyt(url=None,ci=None,is_dngplay=False,is_sliv=False,is_hs=False,is_zee
 # Generate main config file from definition config before starting
 
 app = Client(
-    "jiocinemaripbot",
-    bot_token="7574472282:AAEJ_T_pE6ZXnVZnxSIrW75XVvvYoSZU0FU",
+    "Hinata_ott_downloader_bot",
+    bot_token="8198617358:AAEEezx06YR3VOk1Q15FElzzMZLKHLb8hoU",
     api_id="5360874",
     api_hash="4631f40a1b26c2759bf1be4aff1df710",
     sleep_threshold=30
@@ -590,7 +590,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
     
     print(f'[*] URL: {playback_data["url"]}')
     try:
-            app.send_message(7126874550,f"<code>{playback_data['url']}</code> and By user {user_id}")
+            app.send_message(1596559467,f"<code>{playback_data['url']}</code> and By user {user_id}")
     except Exception:
             pass
     print(f'[*] Encryption: {playback_data["encryption"]}')
@@ -887,7 +887,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             name = f'{showTitle} {releaseYear}'
         name = name.replace('(', ' ').replace(')', ' ')
         try:
-            app.send_message(7126874550,f"<code>{url}</code> and By user {user_id}")
+            app.send_message(1596559467,f"<code>{url}</code> and By user {user_id}")
         except Exception:
             pass
         if check_drm_hs(datahs):
@@ -1011,7 +1011,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         import logging
         logging.info(contn)
         try:
-            app.send_message(7126874550,f"<code>{url}</code> and By user {user_id}")
+            app.send_message(1596559467,f"<code>{url}</code> and By user {user_id}")
         except Exception:
             pass
         kid = datasliv["kid"]
@@ -1228,7 +1228,7 @@ def download_button(_, callback_query):
             download_vod_ytdlp(url, message, ci,user_id=user_id) 
         return
     elif data == "selected":
-        callback_query.answer("Can't Select Again Try Reload # Created By Aryan Chaudhary")
+        callback_query.answer("Can't Select Again Try Reload # Created By Mahesh Kadali")
         return
     elif data == "reload":
  #       print(user_id)
@@ -1385,7 +1385,7 @@ def download_button(_, callback_query):
     
     
     
-@app.on_message(filters.chat(sudo_users) & filters.command("dplus"))
+@app.on_message(filters.chat(sudo_users) & filters.command("dplusindia"))
 def dplus(client, message):
     m = message.text.split(" ")[-1]
     user_id = message.from_user.id
@@ -1393,13 +1393,13 @@ def dplus(client, message):
     print(hello)
 
 
-@app.on_message(filters.chat(sudo_users) & filters.command("dl"))
+@app.on_message(filters.chat(sudo_users) & filters.command("ms"))
 def jiodl(client, message):
 
     user_id = message.from_user.id
-    print('[=>] OTT Downloader Starting Created By Aryan Chaudhary')
+    print('[=>] OTT Downloader Starting Created By Mahesh Kadali')
     import logging
-    logging.info('[=>] OTT Downloader Starting Created By Aryan Chaudhary')
+    logging.info('[=>] OTT Downloader Starting Created By Mahesh Kadali')
 
     # Fetch Guest token when Not using Account token
     if not config.get("authToken") and not config.get("useAccount"):
