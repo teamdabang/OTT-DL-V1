@@ -110,7 +110,7 @@ def mergeall(files, outpath):
     
     cmd += '-map 0:v?'
     for i in range(len(files) - 1):
-        cmd += f'-map {i + 1}:a?:0 '
+        cmd += f'-map {i + 1}:a:0 '
     
     cmd += f'-c:v copy -c:a copy "{outpath}" '
     
