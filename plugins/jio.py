@@ -5,7 +5,6 @@ import yt_dlp
 import subprocess
 import threading
 import time
-from plugins.ytdl import *
 from plugins.dl import *
 from plugins.exec import *
 from plugins.dash import *
