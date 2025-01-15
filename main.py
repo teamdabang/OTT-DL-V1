@@ -149,10 +149,10 @@ def multi_lang(_content_data, message):
         other_langs = []
 
         for _lang in _content_data["assetsByLanguage"]:
-            if _lang['id'] in jiocine.LANG_MAP:
+            if _lang['id'] in LANG_MAP:
                 other_langs.append({
                     'id': _lang['id'],
-                    'name': jiocine.LANG_MAP[_lang['id']],
+                    'name': LANG_MAP[_lang['id']],
                     'assetsId': _lang['assetId']
                 })
         langr = "-"
@@ -405,9 +405,9 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     import logging
     if is_hs:
       for fr in frmts:
-        ydl_opts['postprocessors'] = []
-        ydl_opts['fixup'] = 'never'
-        ydl_opts['recode'] = False
+       # ydl_opts['postprocessors'] = []
+      #  ydl_opts['fixup'] = 'never'
+      #  ydl_opts['recode'] = False
 #        ydl_opts['paths']['home'] = "downloads"
         r = detector(content_id,fr)
         if r == 1:
