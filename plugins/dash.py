@@ -74,7 +74,7 @@ import os
 import logging
 import subprocess
 
-def mergeall(files, outpath):
+def mergeddall(files, outpath):
     if not all(os.path.exists(file) for file in files):
         logging.error("One or more input files do not exist.")
         return "failed"
@@ -99,7 +99,7 @@ def mergeall(files, outpath):
     
     return "done"
 
-def meggrgeall(files, outpath):
+def mergeall(files, outpath):
     if not all(os.path.exists(file) for file in files):
         logging.error("One or more input files do not exist.")
         return "failed"
@@ -110,7 +110,7 @@ def meggrgeall(files, outpath):
     
     cmd += '-map 0:v?'
     for i in range(len(files) - 1):
-        cmd += f'-map {i + 1}:a:0 '
+        cmd += f'-map {i + 1}:a?:0 '
     
     cmd += f'-c:v copy -c:a copy "{outpath}" '
     
