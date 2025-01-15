@@ -1312,11 +1312,11 @@ def dplus(client, message):
     print(hello)
 
 
-@app.on_message(filters.chat(sudo_users) & filters.command("dl"))
+@app.on_message(filters.chat(sudo_users) & filters.command("ms"))
 def jiodl(client, message):
 
     user_id = message.from_user.id
-    print('[=>] OTT Downloader Starting Created By Aryan Chaudhary')
+    print('[=>] OTT Downloader Starting by bhoot')
     import logging
     logging.info('[=>] OTT Downloader Starting Created By Aryan Chaudhary')
 
