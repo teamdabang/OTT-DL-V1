@@ -41,7 +41,8 @@ if not utils.isExist(configPath):
 default_res = ""
 default_strm = ''
 config = utils.JSO(configPath, 4)
-sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467]
+##sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467]
+sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467, 7361945688, 1195351595]
 
 class ButtonMaker:
     def __init__(self):
