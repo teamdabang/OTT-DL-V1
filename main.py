@@ -196,39 +196,7 @@ def fetch_widevine_keys(pssh_kid_map, content_playback, playback_data):
             pssh_cache[pssh] = requests.get(url='https://hls-proxifier-sage.vercel.app/jc',headers={"pyid":content_playback["playbackId"],"url":playback_data["licenseurl"],"pssh":pssh}).json()["keys"]
             config.set("psshCacheStore", pssh_cache)
 # Use mp4decrypt to decrypt vod(video on demand) using kid:key
-def downloaddash(name,key,frmts,url):
-    
-    cmd = f'/usr/src/app/spjc "{url}" {key} -o "{name}"'
-    hi = subprocess.run(cmd,shell=True)
-    return "done"
-def detector(ci,fr):
-    with open(f"info{ci}.json","r") as file:
-        
-        data = json.load(file)
-        for frm in data['formats']:
-            frmid = frm['format_id']
-            if frmid == fr:
-                if frm['resolution'] == "audio only":
-                    return 1
-                else:
-                    return 2
-def mergeall(files,outpath):
-    cmd = f'ffmpeg -y '
-    for i, audio in enumerate(files):
-            
-            cmd += f'-i "{audio}" '
-    cmd += '-map 0:v '
-#ffmpeg -i input.mp4 -map 0:v -map 0:a:0 -map 0:a:1 -map 0:a:2 -c:v copy -c:a copy output.mp4
-#for i in range(len(self.audio_data)):
-#            ffmpeg_opts.extend(["-map", f"{i+1}:a:0"])
-#    cmd += '-map 0:a:0? '
-    for i in range(len(files)-1):
-       cmd += f'-map {i+1}:a:0 '
-    cmd += f'-c:v copy -c:a copy "{outpath}" '
-    import logging
-    logging.info("merged")
-    process = subprocess.run(cmd, shell=True)
-    return 1
+
     
 
 def downloadformat(ydl_opts,url,info):
