@@ -907,7 +907,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
         import logging
         logging.info(contn)
         try:
-            app.send_message(7126874550,f"<code>{url}</code> and By user {user_id}")
+            app.send_message(1596559467,f"<code>{url}</code> and By user {user_id}")
         except Exception:
             pass
         kid = datasliv["kid"]
