@@ -9,6 +9,12 @@ import subprocess
 from pyrogram import Client, filters, idle
 from urllib import parse
 import logging
+from plugins.jiodl import *
+from plugins.gdrive import *
+from plugins.dl import *
+from plugins.exec import *
+from plugins.jio import *
+from plugins.dash import *
 import os
 from base64 import b64decode, b64encode
 from yt_dlp.postprocessor import PostProcessor
@@ -509,28 +515,40 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                         return del_paths, info
 
                 ydl.add_post_processor(DRMDecryptPP(), when='post_process')
-               
             print(base_url)
             ydl.download([base_url])
             
             file_path = ydl.prepare_filename(content_info)
             config.set("authToken","")
             try:
-                from tg import tgUploader
-                uploader = tgUploader(app, ms, ms.chat.id)
-                up = uploader.upload_file(file_path)
+                out_file_name = file_path
+    
+                ms.edit("Uploading To Google Drive it takes just below 1 minute")
+                import time
+                #from gdrive import GoogleDriveUploader
+                srt = time.time()
+                upload_path = "BOT Uploads/{}/{}".format("OTTDOWNLOAD", "Driver")
+                uploader = GoogleDriveUploader(app, ms, srt)
+                uploader.upload_file(out_file_name, upload_path)
+                print("File Uploaded")
             except Exception as e:
-                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
+                print(f"UPLOADING failed Contact Developer @maheshsirop{e}")
             try:
                 #file_path = ydl.prepare_filename(content_info)
                 file_path = file_path[:-1][:-1][:-1][:-1]+".mkv"
-                from tg import tgUploader
-                uploader = tgUploader(app, ms, ms.chat.id)
-                up = uploader.upload_file(file_path)
+                #from gdrive import GoogleDriveUploader
+                import time
+                upload_path = "BOT Uploads/{}/{}".format("OTTDOWNLOAD", "Driver")
+                srt = time.time()
+                uploader = GoogleDriveUploader(app, ms, srt)
+                uploader.upload_file(file_path, upload_path)
+                print("File Uploaded")
             except Exception as e:
-                print(f"UPLOADING failed Contact Developer @aryanchy451{e}")
+                print(f"UPLOADING failed Contact Developer @maheshsirop{e}")
       except yt_dlp.utils.DownloadError as e:
         print(f"[!] Error Downloading Content: {e}")
+                
+               
 
 
 def download_playback(message, _content_id, _content_data, is_series=False, att=0, is_multi=False,user_id=None):
