@@ -38,7 +38,7 @@ def detector(ci,fr):
                     return 1
                 else:
                     return 2
-def mergeall(files,outpath):
+def merrrrgeall(files,outpath):
     cmd = f'ffmpeg -y '
     
     for i, audio in enumerate(files):
@@ -63,6 +63,46 @@ def mergeall(files,outpath):
 
 
 
+import subprocess
+import os
+import logging
+
+def mergeall(files, outpath):
+    if not files:
+        logging.error("No files provided for merging.")
+        return 0
+    cmd = 'ffmpeg -y '
+
+    for audio in files:
+        cmd += f'-i "{audio}" '
+
     
+    cmd += '-map 0:v:0? '
+    for i in range(len(files)):
+        cmd += f'-map {i + 1}:a:0 '  # Map the first audio stream of each input
+
+    # Specify the output codec and output file
+    cmd += '-c:v copy -c:a aac -b:a 192k "{outpath}"'
+
+    # Log the command for debugging
+    logging.info(f"Running command: {cmd}")
+
+    # Execute the command
+    process = subprocess.run(cmd, shell=True)
+
+    # Check if the process was successful
+    if process.returncode != 0:
+        logging.error("ffmpeg command failed.")
+        return 0
+
+    # Remove the input files after merging
+    for audio in files:
+        try:
+            os.remove(audio)
+        except OSError as e:
+            logging.error(f"Error removing file {audio}: {e}")
+
+    logging.info("Merging completed successfully.")
+    return 1    
 
 
