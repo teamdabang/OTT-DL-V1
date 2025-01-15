@@ -7,8 +7,6 @@ from plugins.dash import *
 #from plugins.handler.mhandler import* 
 #from plugins.ytdl import *
 
-
-
 def multi_lang(_content_data, message):
     if "assetsByLanguage" in _content_data and len(_content_data["assetsByLanguage"]) > 0:
         other_langs = []
@@ -103,5 +101,4 @@ def merge_vod_ffmpeg(in_video, in_audio, output_path):
     ffmpegPath = realPath(joinPath(scriptsDir, config.get('ffmpegPath')))
     command = ["ffmpeg", '-hide_banner', '-i', in_video, '-i', in_audio, '-c:v', 'copy', '-c:a', 'copy', output_path]
     process = subprocess.run(command, stderr=subprocess.PIPE, universal_newlines=True)
-
-
+    
