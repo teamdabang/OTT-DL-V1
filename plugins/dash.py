@@ -114,11 +114,7 @@ def mergeall(files, outpath):
     return 1
 
 # Example usage
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    files = ["input1.mp4", "input2.mp4", "input3.mp4"]  # Replace with your actual file paths
-    outpath = "output.mp4"  # Replace with your desired output file path
-    mergeall(files, outpath)
+
 
 
 def mergealgl(files,outpath):
