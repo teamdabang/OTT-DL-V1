@@ -1018,7 +1018,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
 
         
     data = extractyt(url=url,ci=ci,is_dngplay=is_dngplay,is_sliv=is_sliv,is_hs=is_hs,is_zee5=is_zee5,is_dplus=is_dplus)
-    if (is_sliv and datasliv["isencrypted"]) or (is_zee5)):
+    if ((is_sliv and datasliv["isencrypted"]) or (is_zee5)):
         rid_map = {}
         for lang in data['formats']:
             frmtid = lang['format_id']
