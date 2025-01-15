@@ -71,8 +71,57 @@ def detector(ci, fr):
 
 
 
+import subprocess
+import logging
+import os
 
-def mergeall(files,outpath):
+def mergeall(files, outpath):
+    # Check if input files exist
+    for audio in files:
+        if not os.path.isfile(audio):
+            logging.error("Input file does not exist: %s", audio)
+            return 0  # Indicate failure
+
+    # Start building the ffmpeg command
+    cmd = ['ffmpeg', '-y']  # '-y' to overwrite output file without asking
+    
+    # Add input files to the command
+    for audio in files:
+        cmd += ['-i', audio]
+    
+    # Map the video stream from the first input file
+    cmd += ['-map', '0:v']
+    
+    # Map audio streams from all input files
+    for i in range(len(files)):
+        cmd += [f'-map', f'{i}:a']
+    
+    # Specify the output codec and output file path
+    cmd += ['-c:v', 'copy', '-c:a', 'aac', outpath]
+    
+    
+    logging.info("Executing command: %s", ' '.join(cmd))
+    
+    
+    process = subprocess.run(cmd, capture_output=True, text=True)
+    
+    
+    if process.returncode != 0:
+        logging.error("ffmpeg command failed with return code: %d", process.returncode)
+        logging.error("ffmpeg output: %s", process.stderr)
+        return 0  
+    logging.info("Merging completed successfully.")
+    return 1
+
+# Example usage
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    files = ["input1.mp4", "input2.mp4", "input3.mp4"]  # Replace with your actual file paths
+    outpath = "output.mp4"  # Replace with your desired output file path
+    mergeall(files, outpath)
+
+
+def mergealgl(files,outpath):
     cmd = f'ffmpeg -y '
     for i, audio in enumerate(files):
             
