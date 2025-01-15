@@ -20,104 +20,24 @@ import logging
 import os
 
 
-def downloaddash(name, key, frmts, url):
+
+def downloaddash(name,key,frmts,url):
+    
     cmd = f'/usr/src/app/spjc "{url}" {key} -o "{name}"'
-    try:
-        result = subprocess.run(cmd, shell=True, check=True, capture_output=True)
-        logging.info(f"Download and decryption successful: {result.stdout.decode()}")
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Error during download: {e.stderr.decode()}")
-        return "failed"
+    hi = subprocess.run(cmd,shell=True)
     return "done"
-
-def loaddash(name, key, frmts, url):
-
-    # Define the download directory
-    download_dir = 'downloads'
-
-    # Create the download directory if it doesn't exist
-    os.makedirs(download_dir, exist_ok=True)
-
-    # Define the full path for the output file
-    output_file_path = os.path.join(download_dir, name)
-
-    cmd = [url, key, '-o', output_file_path]  # Use the full path for the output file
-    try:
-        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        logging.info(f"Download and decryption successful: {result.stdout}")
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Error during download: {e.stderr}")
-        raise RuntimeError("Download failed") from e  # Raise a more informative error
-    return "done"
-
-
-
-
-
-
-def detector(ci, fr):
-    try:
-        with open(f"info{ci}.json", "r") as file:
-            data = json.load(file)
-            for frm in data['formats']:
-                if frm['format_id'] == fr:
-                    return 1 if frm['resolution'] == "audio only" else 2
-    except FileNotFoundError:
-        logging.error(f"File info{ci}.json not found.")
-    except json.JSONDecodeError:
-        logging.error("Error decoding JSON.")
-    return None
-
-
-
-
-import subprocess
-import logging
-import os
-
-def mergeall(files, outpath):
-    # Check if input files exist
-    for audio in files:
-        if not os.path.isfile(audio):
-            logging.error("Input file does not exist: %s", audio)
-            return 0  # Indicate failure
-
-    # Start building the ffmpeg command
-    cmd = ['ffmpeg', '-y']  # '-y' to overwrite output file without asking
-    
-    # Add input files to the command
-    for audio in files:
-        cmd += ['-i', audio]
-    
-    # Map the video stream from the first input file
-    cmd += ['-map', '0:v']
-    
-    # Map audio streams from all input files
-    for i in range(len(files)):
-        cmd += [f'-map', f'{i}:a']
-    
-    # Specify the output codec and output file path
-    cmd += ['-c:v', 'copy', '-c:a', 'aac', outpath]
-    
-    
-    logging.info("Executing command: %s", ' '.join(cmd))
-    
-    
-    process = subprocess.run(cmd, capture_output=True, text=True)
-    
-    
-    if process.returncode != 0:
-        logging.error("ffmpeg command failed with return code: %d", process.returncode)
-        logging.error("ffmpeg output: %s", process.stderr)
-        return 0  
-    logging.info("Merging completed successfully.")
-    return 1
-
-# Example usage
-
-
-
-def mergealgl(files,outpath):
+def detector(ci,fr):
+    with open(f"info{ci}.json","r") as file:
+        
+        data = json.load(file)
+        for frm in data['formats']:
+            frmid = frm['format_id']
+            if frmid == fr:
+                if frm['resolution'] == "audio only":
+                    return 1
+                else:
+                    return 2
+def mergeall(files,outpath):
     cmd = f'ffmpeg -y '
     for i, audio in enumerate(files):
             
@@ -134,5 +54,9 @@ def mergealgl(files,outpath):
     logging.info("merged")
     process = subprocess.run(cmd, shell=True)
     return 1
+
+
+
+    
 
 
