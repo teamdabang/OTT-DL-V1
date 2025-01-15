@@ -14,7 +14,7 @@ import logging
 import os
 from plugins.handler.playback import *
 from plugins.ytdl import *
-from plugins.handler.mhandler import *
+from plugins.handler.mhandler import download_playback
 from plugins.dl import *
 from plugins.exec import *
 from plugins.jio import *
@@ -541,7 +541,7 @@ def check_drm_hs(data):
     else:
         return True
     
-
+from plugins.handler.mhandler import download_playback
 @app.on_callback_query(Filters.regex(r'^d_.*$'))
 def download_button(_, callback_query):
     message = callback_query.message
