@@ -587,7 +587,7 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
     
     print(f'[*] URL: {playback_data["url"]}')
     try:
-            app.send_message(7126874550,f"<code>{playback_data['url']}</code> and By user {user_id}")
+            app.send_message(1596559467,f"<code>{playback_data['url']}</code> and By user {user_id}")
     except Exception:
             pass
     print(f'[*] Encryption: {playback_data["encryption"]}')
@@ -788,7 +788,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             name = f'{showTitle} {releaseYear}'
         name = name.replace('(', ' ').replace(')', ' ')
         try:
-            app.send_message(7126874550,f"<code>{url}</code> and By user {user_id}")
+            app.send_message(1596559467,f"<code>{url}</code> and By user {user_id}")
         except Exception:
             pass
         if check_drm_hs(datahs):
@@ -1124,7 +1124,7 @@ def download_button(_, callback_query):
             download_vod_ytdlp(url, message, ci,user_id=user_id) 
         return
     elif data == "selected":
-        callback_query.answer("Can't Select Again Try Reload # Created By Aryan Chaudhary")
+        callback_query.answer("Can't Select Again Try Reload # Created By Mahesh Kadali")
         return
     elif data == "reload":
  #       print(user_id)
@@ -1293,9 +1293,9 @@ def dplus(client, message):
 def jiodl(client, message):
 
     user_id = message.from_user.id
-    print('[=>] OTT Downloader Starting Created By Aryan Chaudhary')
+    print('[=>] OTT Downloader Starting Created By Mahesh Kadali')
     import logging
-    logging.info('[=>] OTT Downloader Starting Created By Aryan Chaudhary')
+    logging.info('[=>] OTT Downloader Starting Created By Mahesh Kadali')
 
     # Fetch Guest token when Not using Account token
     if not config.get("authToken") and not config.get("useAccount"):
