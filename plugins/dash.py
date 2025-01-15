@@ -6,7 +6,7 @@ import os
 from plugins.dl import *
 from plugins.exec import *
 from plugins.jio import *
-from plugins.handler.playback import *
+##from plugins.handler.playback import *
 from plugins.handler.mhandler import* 
 from plugins.ytdl import *
 
