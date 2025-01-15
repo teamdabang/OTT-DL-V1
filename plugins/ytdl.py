@@ -12,7 +12,7 @@ from pyrogram import filters, idle
 from urllib import parse
 import logging
 import os
-from plugins.handler.playback import *
+##from plugins.handler.playback import *
 #from plugins.buttons import *
 from pyrogram import Client as app
 from plugins.handler.mhandler import *
