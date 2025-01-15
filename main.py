@@ -12,9 +12,6 @@ from pyrogram import Client, filters, idle
 from urllib import parse
 import logging
 import os
-##from plugins.handler.playback import download_playback
-#from plugins.ytdl import extractyt
-from plugins.handler.mhandler import *
 from plugins.dl import *
 from plugins.exec import *
 from plugins.jio import *
@@ -46,10 +43,6 @@ default_res = ""
 default_strm = ''
 config = utils.JSO(configPath, 4)
 sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467, 7361945688, 1195351595]
-
-
-
-
 
 class ButtonMaker:
     def __init__(self):
@@ -114,7 +107,103 @@ class ButtonMaker:
         return InlineKeyboardMarkup(menu)
 
 
+def extractyt(url=None,ci=None,is_dngplay=False,is_sliv=False,is_hs=False,is_zee5=False,is_dplus=False):
+    try:
+        os.remove(f"info{ci}.json")
+    except Exception:
+        pass
+    
+    import json
+    if is_dngplay:
+        subprocess.run(f"yt-dlp --allow-unplayable-formats -u token -p 47c906778850df6957712a3bfd24c276 --no-check-certificate --dump-json {url} > info{ci}.json",shell=True)
+    elif is_sliv:
+        url = f'"{url}"'
+      #  token = requests.get("https://ccroute.vercel.app/sliv").json()["token"]
+        tok = "47c6938a7c5c4bd48d503e330c9e6512-1735474637849"
+        subprocess.run(f"yt-dlp --allow-unplayable-formats --add-headers x-playback-session-id:{tok} --no-check-certificate --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 --dump-json {url} > info{ci}.json",shell=True)
 
+    elif is_hs:
+        url = f'"{url}"'
+        subprocess.run(f"yt-dlp --allow-unplayable-formats --no-check-certificate --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 --dump-json {url} > info{ci}.json",shell=True)
+    else:
+        url = f'"{url}"'
+        subprocess.run(f"yt-dlp --allow-unplayable-formats --no-check-certificate --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 --dump-json {url} > info{ci}.json",shell=True)
+    import json
+    with open(f'info{ci}.json', 'r') as f:
+        data = json.load(f)
+    return data
+    
+# Generate main config file from definition config before starting
+
+app = Client(
+    "Hinata_ott_downloader_bot",
+    bot_token="8198617358:AAEEezx06YR3VOk1Q15FElzzMZLKHLb8hoU",
+    api_id="5360874",
+    api_hash="4631f40a1b26c2759bf1be4aff1df710",
+    sleep_threshold=30
+)
+
+# Check Multi lang support
+def multi_lang(_content_data, message):
+    if "assetsByLanguage" in _content_data and len(_content_data["assetsByLanguage"]) > 0:
+        other_langs = []
+
+        for _lang in _content_data["assetsByLanguage"]:
+            if _lang['id'] in jiocine.LANG_MAP:
+                other_langs.append({
+                    'id': _lang['id'],
+                    'name': jiocine.LANG_MAP[_lang['id']],
+                    'assetsId': _lang['assetId']
+                })
+        langr = "-"
+        print('[=>] Multiple Languages Found:')
+        for _idx, _lang in enumerate(other_langs):
+            message.reply_text(f'[{_idx + 1}] {_lang["name"]}')
+            langr+=_lang["name"]
+
+        asset_idx = message.reply_text(f'[?] Which language you want to choose(Default: {_content_data["defaultLanguage"]})?: ')
+     #   if len(asset_idx) < 1:
+        asset_idx = 1
+        asset_idx = int(asset_idx) - 1
+        if asset_idx < 0 or asset_idx >= len(other_langs):
+            print("[!] Unknown Language Choice")
+            
+        print("This Working")
+        return other_langs[asset_idx]
+
+    # Default language
+    def_lang = _content_data["defaultLanguage"]
+    return {
+        'id': REV_LANG_MAP[def_lang],
+        'name': def_lang,
+        'assetsId': _content_data['id'],
+    }
+
+
+# Fetch Widevine keys using PSSH
+def fetch_widevine_keys(pssh_kid_map, content_playback, playback_data):
+    got_cert = False
+    cert_data = None
+    pssh_cache = config.get("psshCacheStore")
+
+    # Get Keys for all KIDs of PSSH
+    for pssh in pssh_kid_map.keys():
+        
+
+        # Need to fetch even if one key missing
+        fetch_keys = False
+        if pssh in pssh_cache:
+            fetch_keys = False
+                    
+        else:
+            fetch_keys = True
+        
+        if fetch_keys:
+            pssh_cache[pssh] = requests.get(url='https://hls-proxifier-sage.vercel.app/jc',headers={"pyid":content_playback["playbackId"],"url":playback_data["licenseurl"],"pssh":pssh}).json()["keys"]
+            config.set("psshCacheStore", pssh_cache)
+# Use mp4decrypt to decrypt vod(video on demand) using kid:key
+
+    
 
 
     
@@ -125,7 +214,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     global default_res
     import os
     
-    status = app.send_message(message.chat.id, text=f"[😋] Downloading")
+    status = app.send_message(message.chat.id, f"[😋] Downloading")
     ci = content_id
     with open(f"{user_id}.json",'r') as f:
         datajc = json.load(f)
@@ -153,11 +242,6 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     
     temp_dir = realPath(joinPath(scriptsDir, config.get('tempPath')))
     ffmpegPath = realPath(joinPath(scriptsDir, config.get('ffmpegPath')))
-    
-
-
-# Check Multi lang support
-
 
     
     def speedmeter(d):
@@ -321,7 +405,10 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     import logging
     if is_hs:
       for fr in frmts:
-
+        ydl_opts['postprocessors'] = []
+        ydl_opts['fixup'] = 'never'
+        ydl_opts['recode'] = False
+#        ydl_opts['paths']['home'] = "downloads"
         r = detector(content_id,fr)
         if r == 1:
             ns = content_id + f'.{fr}' + '.%(ext)s'
@@ -522,52 +609,6 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
         print(f"[!] Error Downloading Content: {e}")
 
 
-
-            
-      
-
-            
-
-
-
-
-
-
-
-
-def extractyt(url=None,ci=None,is_dngplay=False,is_sliv=False,is_hs=False,is_zee5=False,is_dplus=False):
-    try:
-        os.remove(f"info{ci}.json")
-    except Exception:
-        pass
-    
-    import json
-    if is_dngplay:
-        subprocess.run(f"yt-dlp --allow-unplayable-formats -u token -p 47c906778850df6957712a3bfd24c276 --no-check-certificate --dump-json {url} > info{ci}.json",shell=True)
-    elif is_sliv:
-        url = f'"{url}"'
-      #  token = requests.get("https://ccroute.vercel.app/sliv").json()["token"]
-        tok = "47c6938a7c5c4bd48d503e330c9e6512-1735474637849"
-        subprocess.run(f"yt-dlp --allow-unplayable-formats --add-headers x-playback-session-id:{tok} --no-check-certificate --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 --dump-json {url} > info{ci}.json",shell=True)
-
-    elif is_hs:
-        url = f'"{url}"'
-        subprocess.run(f"yt-dlp --allow-unplayable-formats --no-check-certificate --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 --dump-json {url} > info{ci}.json",shell=True)
-    else:
-        url = f'"{url}"'
-        subprocess.run(f"yt-dlp --allow-unplayable-formats --no-check-certificate --proxy http://toonrips:xipTsP9H9s@103.171.51.246:50100 --dump-json {url} > info{ci}.json",shell=True)
-    import json
-    with open(f'info{ci}.json', 'r') as f:
-        data = json.load(f)
-    return data
-
-def check_drm_hs(data):
-    if data["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["licence_urls"][0] == "":
-        return False
-    else:
-        return True
-
-
 def download_playback(message, _content_id, _content_data, is_series=False, att=0, is_multi=False,user_id=None):
     global default_strm
     
@@ -692,11 +733,34 @@ def download_playback(message, _content_id, _content_data, is_series=False, att=
 
 
 
+@app.on_message(Filters.command('start'))
+def start_command(client, message):
+    app.send_message(message.chat.id, "I'm Hinata Hyuga Girlfriend of Mahesh \n\nI can download Ott content And Upload \n\nFor Subscription Contact Babe @PayPalMafiaSupportbot! \n\nBot made by My Babe 🫣 .")
 
+@app.on_message(Filters.command('plans'))
+def plans(client, message):
+    app.send_message(message.chat.id, "**🙂 OTT Downloader Bot Plans 🙂  \n\n👇INDIVIDUAL PLANS(All OTTs)👇 \n\n😇 1 day - ₹80 😇 \n\n😇 7 days - ₹160 😇 \n\n😇 30 days - ₹350 😇 \n\n😇 60 days - ₹700 😇 \n\n😇 355 days - ₹1799 😇 \n\n🚨 Check all otts which are supported otts in bot by sending /otts before purchase 🚨 \n\n🚨 Terms And Conditions 🚨 \n\n🧐 Once Payment Done No refund Will be done. \n\n🧐 our services are non refundable. \n\n🧐 If services are stopped then you will get extra validity of your remaining balance. \n\n🧐 No abuse in bot**")
+    
+@app.on_message(Filters.command('otts'))
+def otts(client, message):
+    app.send_message(message.chat.id, "🤭 I Can Download Below otts and Send you 🤭 \n\n**__--List:---__** \n\nJio cinema \nDangal Play \nMx Player \nHotstar/Disney ( maintanence ) \nSony Liv \nZee5 \nDiscovery Plus \n\nMore OTTs Adding Soon! \n\n🥰 Thanks For Using OTT Drm Bot 🥰")
 
+@app.on_message(Filters.command('help'))
+def help(client, message):
+    app.send_message(message.chat.id, "**__Here You can Know about All available Commands:-\n\n     /start -  To start The Bot. \n    /about - To know about me. \n    /help - Show Help & Features. \n    /features - See available features. \n    /plans -  See available plans.\n    /otts :- To check available OTTs. \n\n\nFeatures:- \n\n1. /ms url \n 2. Select the button (Quality). \n\nJust send me any DRM links from supported sites with /ms to download That.__**")
 
-
-
+@app.on_message(Filters.command('features'))
+def features(client, message):
+    app.send_message(message.chat.id, "**Ara Ara! I am Hinata Hyuga an Ott Downloader Bot. \n\n💥 Send Any DRM Link I will upload it To Telegram. \n\n💥 I support Direct DRM link from Dangal play, Hotstar, JioCinema, Mx Player etc..**")
+@app.on_message(Filters.command('about'))
+def about(client, message):
+    app.send_message(message.chat.id, '**Mʏ Nᴀᴍᴇ: <a href="t.me/Hinata_ott_downloader_bot">Hɪɴᴀᴛᴀ Oᴛᴛ Dᴏᴡɴʟᴏᴀᴅᴇʀ</a> \n\nVᴇʀsɪᴏɴ: ᴠ10.6 \n\nLᴀɴɢᴜᴀɢᴇ: <a href="www.python.org/">Pʏᴛʜᴏɴ 3.13</a> \n\nDᴇᴠᴇʟᴏᴘᴇʀ: <a href="t.me/PaypalMafiaOfficial">Pᴀʏᴘᴀʟ Mᴀғɪᴀ</a> \n\nPᴏᴡᴇʀᴇᴅ Bʏ: <a href="t.me/PaypalMafiaOfficial">Pᴀʏᴘᴀʟ Mᴀғɪᴀ Bᴏᴛs</a>**')
+#@app.on_message. 
+def check_drm_hs(data):
+    if data["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["licence_urls"][0] == "":
+        return False
+    else:
+        return True
 def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm=False,rid_map=None,user_id=0,spjc=False):
     import json
     
@@ -1063,66 +1127,6 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
     
     
 
-
-
-
-          
-  
-
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-    
-# Generate main config file from definition config before starting
-
-app = Client(
-    "Hinata_ott_downloader_bot",
-    bot_token="8198617358:AAEEezx06YR3VOk1Q15FElzzMZLKHLb8hoU",
-    api_id="5360874",
-    api_hash="4631f40a1b26c2759bf1be4aff1df710",
-    sleep_threshold=30
-)
-
-@app.on_message(Filters.command('start'))
-def start_command(client, message):
-    app.send_message(message.chat.id, "I'm Hinata Hyuga Girlfriend of Mahesh \n\nI can download Ott content And Upload \n\nFor Subscription Contact Babe @PayPalMafiaSupportbot! \n\nBot made by My Babe 🫣 .")
-
-@app.on_message(Filters.command('plans'))
-def plans(client, message):
-    app.send_message(message.chat.id, "**🙂 OTT Downloader Bot Plans 🙂  \n\n👇INDIVIDUAL PLANS(All OTTs)👇 \n\n😇 1 day - ₹80 😇 \n\n😇 7 days - ₹160 😇 \n\n😇 30 days - ₹350 😇 \n\n😇 60 days - ₹700 😇 \n\n😇 355 days - ₹1799 😇 \n\n🚨 Check all otts which are supported otts in bot by sending /otts before purchase 🚨 \n\n🚨 Terms And Conditions 🚨 \n\n🧐 Once Payment Done No refund Will be done. \n\n🧐 our services are non refundable. \n\n🧐 If services are stopped then you will get extra validity of your remaining balance. \n\n🧐 No abuse in bot**")
-    
-@app.on_message(Filters.command('otts'))
-def otts(client, message):
-    app.send_message(message.chat.id, "🤭 I Can Download Below otts and Send you 🤭 \n\n**__--List:---__** \n\nJio cinema \nDangal Play \nMx Player \nHotstar/Disney ( maintanence ) \nSony Liv \nZee5 \nDiscovery Plus \n\nMore OTTs Adding Soon! \n\n🥰 Thanks For Using OTT Drm Bot 🥰")
-
-@app.on_message(Filters.command('help'))
-def help(client, message):
-    app.send_message(message.chat.id, "**__Here You can Know about All available Commands:-\n\n     /start -  To start The Bot. \n    /about - To know about me. \n    /help - Show Help & Features. \n    /features - See available features. \n    /plans -  See available plans.\n    /otts :- To check available OTTs. \n\n\nFeatures:- \n\n1. /ms url \n 2. Select the button (Quality). \n\nJust send me any DRM links from supported sites with /ms to download That.__**")
-
-@app.on_message(Filters.command('features'))
-def features(client, message):
-    app.send_message(message.chat.id, "**Ara Ara! I am Hinata Hyuga an Ott Downloader Bot. \n\n💥 Send Any DRM Link I will upload it To Telegram. \n\n💥 I support Direct DRM link from Dangal play, Hotstar, JioCinema, Mx Player etc..**")
-@app.on_message(Filters.command('about'))
-def about(client, message):
-    app.send_message(message.chat.id, '**Mʏ Nᴀᴍᴇ: <a href="t.me/Hinata_ott_downloader_bot">Hɪɴᴀᴛᴀ Oᴛᴛ Dᴏᴡɴʟᴏᴀᴅᴇʀ</a> \n\nVᴇʀsɪᴏɴ: ᴠ10.6 \n\nLᴀɴɢᴜᴀɢᴇ: <a href="www.python.org/">Pʏᴛʜᴏɴ 3.13</a> \n\nDᴇᴠᴇʟᴏᴘᴇʀ: <a href="t.me/PaypalMafiaOfficial">Pᴀʏᴘᴀʟ Mᴀғɪᴀ</a> \n\nPᴏᴡᴇʀᴇᴅ Bʏ: <a href="t.me/PaypalMafiaOfficial">Pᴀʏᴘᴀʟ Mᴀғɪᴀ Bᴏᴛs</a>**')
-#@app.on_message. 
-def check_drm_hs(data):
-    if data["success"]["page"]["spaces"]["player"]["widget_wrappers"][0]["widget"]["data"]["player_config"]["media_asset"]["licence_urls"][0] == "":
-        return False
-    else:
-        return True
-    
 @app.on_callback_query(Filters.regex(r'^d_.*$'))
 def download_button(_, callback_query):
     message = callback_query.message
