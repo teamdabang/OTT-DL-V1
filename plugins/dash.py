@@ -70,55 +70,24 @@ def detector(ci, fr):
 
 
 
-import os
-import logging
-import subprocess
 
-def mergeddall(files, outpath):
-    if not all(os.path.exists(file) for file in files):
-        logging.error("One or more input files do not exist.")
-        return "failed"
 
-    cmd = ['ffmpeg', '-y']
-    for audio in files:
-        cmd += ['-i', audio]
-    
-    # Use '0:v?' to ignore if the video stream does not exist
-    cmd += ['-map', '0:v?']
-    for i in range(len(files)):
-        cmd += [f'-map', f'{i}:a?']  # Map audio streams from all input files
-    
-    cmd += ['-c:v', 'copy', '-c:a', 'copy', outpath]
-    
-    try:
-        process = subprocess.run(cmd, check=True, capture_output=True)
-        logging.info(f"Merging successful: {process.stdout.decode()}")
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Error during merging: {e.stderr.decode()}")
-        return "failed"
-    
-    return "done"
-
-def mergeall(files, outpath):
-    if not all(os.path.exists(file) for file in files):
-        logging.error("One or more input files do not exist.")
-        return "failed"
-
-    cmd = 'ffmpeg -y '
-    for audio in files:
-        cmd += f'-i "{audio}" '
-    
-    cmd += '-map 0:v?'
-    for i in range(len(files) - 1):
-        cmd += f'-map {i + 1}:a:0 '
-    
+def mergeall(files,outpath):
+    cmd = f'ffmpeg -y '
+    for i, audio in enumerate(files):
+            
+            cmd += f'-i "{audio}" '
+    cmd += '-map 0:v '
+#ffmpeg -i input.mp4 -map 0:v -map 0:a:0 -map 0:a:1 -map 0:a:2 -c:v copy -c:a copy output.mp4
+#for i in range(len(self.audio_data)):
+#            ffmpeg_opts.extend(["-map", f"{i+1}:a:0"])
+#    cmd += '-map 0:a:0? '
+    for i in range(len(files)-1):
+       cmd += f'-map {i+1}:a:0 '
     cmd += f'-c:v copy -c:a copy "{outpath}" '
-    
-    try:
-        process = subprocess.run(cmd, shell=True, check=True, capture_output=True)
-        logging.info(f"Merging successful: {process.stdout.decode()}")
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Error during merging: {e.stderr.decode()}")
-        return "failed"
-    
-    return "done"
+    import logging
+    logging.info("merged")
+    process = subprocess.run(cmd, shell=True)
+    return 1
+
+
