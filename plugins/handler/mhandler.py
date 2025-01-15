@@ -95,7 +95,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     global default_res
     import os
     
-    status = app.send_message(message.chat.id, f"[😋] Downloading")
+    status = app.send_message(message.chat.id, text=f"[😋] Downloading")
     ci = content_id
     with open(f"{user_id}.json",'r') as f:
         datajc = json.load(f)
