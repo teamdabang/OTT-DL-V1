@@ -10,6 +10,12 @@ from pyrogram import Client, filters, idle
 from urllib import parse
 import logging
 import os
+
+
+from plugins.dl import *
+from plugins.exec import *
+from plugins.jio import *
+from plugins.dash import *
 from base64 import b64decode, b64encode
 from yt_dlp.postprocessor import PostProcessor
 from utils import scriptsDir, joinPath, realPath
@@ -35,8 +41,8 @@ if not utils.isExist(configPath):
 default_res = ""
 default_strm = ''
 config = utils.JSO(configPath, 4)
-sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467]
-
+##sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467]
+sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467, 7361945688, 1195351595]
 class ButtonMaker:
     def __init__(self):
         self.__button = []
