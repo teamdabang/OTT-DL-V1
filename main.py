@@ -13,7 +13,7 @@ from urllib import parse
 import logging
 import os
 ##from plugins.handler.playback import download_playback
-from plugins.ytdl import *
+from plugins.ytdl import extractyt
 from plugins.handler.mhandler import *
 from plugins.dl import *
 from plugins.exec import *
