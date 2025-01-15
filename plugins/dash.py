@@ -86,7 +86,7 @@ def mergeall(files, outpath):
     # Use '0:v?' to ignore if the video stream does not exist
     cmd += ['-map', '0:v?']
     for i in range(len(files)):
-        cmd += [f'-map', f'{i}:a']  # Map audio streams from all input files
+        cmd += [f'-map', f'{i}:a?']  # Map audio streams from all input files
     
     cmd += ['-c:v', 'copy', '-c:a', 'copy', outpath]
     
