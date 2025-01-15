@@ -805,7 +805,7 @@ def youtube_link(url, message, ci, is_series=False, att=0,is_multi=False,has_drm
             episodeTitle = json_ld_data['containsSeason']['episode']['name']
             name = f'{showTitle} S{int(seasonNumber):02d}E{int(episodeNumber):02d} {episodeTitle}'
         else:  # inserted
-            json_ld_data = json.loads(response['success']['page']['spaces']['seo']['widget_wrappers'][0]['widget']['data']['json_ld_data']['schemas'][1])
+            json_ld_data = json.loads(datahs['success']['page']['spaces']['seo']['widget_wrappers'][0]['widget']['data']['json_ld_data']['schemas'][1])
             releaseYear = json_ld_data.get('releaseYear', 0)
             name = f'{showTitle} {releaseYear}'
         name = name.replace('(', ' ').replace(')', ' ')
