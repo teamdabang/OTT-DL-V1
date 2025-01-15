@@ -1376,7 +1376,7 @@ def jiodl(client, message):
     print('[=>] Fetching Content Details')
     # content_id = 3216132  # 3760812  # 4K Test: 3719559
     try:
-        content_data = jiocine.getContentDetails(content_id)
+        content_data = getContentDetails(content_id)
     except Exception as e:
         m.edit("Trying Other Ott Dl Beta Phase in 2 Secs")
         message = m
@@ -1422,7 +1422,7 @@ def jiodl(client, message):
         m.edit(f'[+] Language: {lang_data["name"]}')
         # Update Content Details
         content_id = lang_data['assetsId']
-        content_data = jiocine.getContentDetails(content_id)
+        content_data = getContentDetails(content_id)
         if not content_data:
             print("[X] Content Details Not Found!")
  #           exit(0)
