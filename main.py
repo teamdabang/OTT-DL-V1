@@ -41,8 +41,8 @@ if not utils.isExist(configPath):
 default_res = ""
 default_strm = ''
 config = utils.JSO(configPath, 4)
-##sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467]
-sudo_users = [7126874550, -1002273935741, 6209057258, 1596559467, 7361945688, 1195351595]
+##sudo_users = [5232142502, -4715074232, 6887217297, 6991688781]
+sudo_users = [5232142502, -4715074232, 6887217297, 6991688781]
 
 class ButtonMaker:
     def __init__(self):
@@ -314,8 +314,8 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
     except Exception:
         pass
     output_name += f'.{language}'
-    output_name += '.mahesh✨✨'
-    output_name += ".@maheshsirop"
+    output_name += '.AJ_TVSERIAL'
+    output_name += ".@AJ_TVSERIAL"
     
 
     # Audio Codec
@@ -448,7 +448,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                 uploader = tgUploader(app, ms, ms.chat.id)
                 up = uploader.upload_file(file_path)
         except Exception as e:
-                print(f"UPLOADING failed Contact Developer @maheshsirop{e}")
+                print(f"UPLOADING failed Contact Developer @SHANA_SUPPORT{e}")
         
     else:
       link = url
@@ -533,7 +533,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                 uploader.upload_file(out_file_name, upload_path)
                 print("File Uploaded")
             except Exception as e:
-                print(f"UPLOADING failed Contact Developer @maheshsirop{e}")
+                print(f"UPLOADING failed Contact Developer @SHANA_SUPPORT{e}")
             try:
                 #file_path = ydl.prepare_filename(content_info)
                 file_path = file_path[:-1][:-1][:-1][:-1]+".mkv"
@@ -545,7 +545,7 @@ def download_vod_ytdlp(url, message, content_id, user_id, is_multi=False, has_dr
                 uploader.upload_file(file_path, upload_path)
                 print("File Uploaded")
             except Exception as e:
-                print(f"UPLOADING failed Contact Developer @maheshsirop{e}")
+                print(f"UPLOADING failed Contact Developer @SHANA_SUPPORT{e}")
       except yt_dlp.utils.DownloadError as e:
         print(f"[!] Error Downloading Content: {e}")
                 
